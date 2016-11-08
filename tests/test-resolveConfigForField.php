@@ -14,6 +14,7 @@ class ResolveConfigForFieldTest extends TestCase {
       'type' => 'someType'
     ];
     $output = ResolveConfig::forField($config);
+    $config['key'] = 'field_someField';
     $this->assertEquals($config, $output);
   }
 
@@ -66,6 +67,7 @@ class ResolveConfigForFieldTest extends TestCase {
     ->once()
     ->andReturn($someField);
     $output = ResolveConfig::forField($config);
+    $someField['key'] = "field_someField";
     $this->assertEquals($someField, $output);
   }
 
@@ -82,6 +84,7 @@ class ResolveConfigForFieldTest extends TestCase {
       'sub_fields' => [$subFieldConfig]
     ];
     $output = ResolveConfig::forField($config);
+    $subFieldConfig['key'] = 'field_someField_subField';
     $this->assertEquals($subFieldConfig, $output['sub_fields'][0]);
   }
 
@@ -98,5 +101,21 @@ class ResolveConfigForFieldTest extends TestCase {
     ];
     $this->expectException(Exception::class);
     ResolveConfig::forField($config);
+  }
+
+  function testForFieldWithValidLayout() {
+    $layoutConfig = [
+      'name' => 'someLayout',
+      'label' => 'Some Layout'
+    ];
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType',
+      'layouts' => [$layoutConfig]
+    ];
+    $output = ResolveConfig::forField($config);
+    $layoutConfig['key'] = 'field_someField_someLayout';
+    $this->assertEquals($layoutConfig, $output['layouts'][0]);
   }
 }

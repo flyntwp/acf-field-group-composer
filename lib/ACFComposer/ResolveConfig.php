@@ -5,26 +5,36 @@ namespace ACFComposer;
 use Exception;
 
 class ResolveConfig {
-  public static function forField($config) {
-    return self::forEntity($config, ['name', 'label', 'type']);
+  public static function forField($config, $keySuffix = '') {
+    return self::forEntity($config, ['name', 'label', 'type'], $keySuffix);
   }
 
-  public static function forLayout($config) {
-    return self::forEntity($config, ['name', 'label']);
+  public static function forLayout($config, $keySuffix = '') {
+    return self::forEntity($config, ['name', 'label'], $keySuffix);
   }
 
-  protected static function forEntity($config, $requiredAttributes) {
+  protected static function forEntity($config, $requiredAttributes, $parentKeySuffix = '') {
     if(is_string($config)) {
       $config = apply_filters($config, null);
     }
     $output = self::validateConfig($config, $requiredAttributes);
-    $output = self::forNestedEntities($output);
+
+    $keySuffix = empty($parentKeySuffix) ? $output['name'] : "{$parentKeySuffix}_{$output['name']}";
+    $output['key'] = "field_{$keySuffix}";
+    $output = self::forNestedEntities($output, $keySuffix);
     return $output;
   }
 
-  protected static function forNestedEntities($config) {
+  protected static function forNestedEntities($config, $parentKeySuffix) {
     if(array_key_exists('sub_fields', $config)) {
-      $config['sub_fields'] = array_map('self::forField', $config['sub_fields']);
+      $config['sub_fields'] = array_map(function($field) use ($parentKeySuffix){
+        return self::forField($field, $parentKeySuffix);
+      }, $config['sub_fields']);
+    }
+    if(array_key_exists('layouts', $config)) {
+      $config['layouts'] = array_map(function($layout) use ($parentKeySuffix){
+        return self::forLayout($layout, $parentKeySuffix);
+      }, $config['layouts']);
     }
     return $config;
   }

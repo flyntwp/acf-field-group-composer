@@ -13,6 +13,7 @@ class ResolveConfigForLayoutTest extends TestCase {
       'label' => 'Some Layout'
     ];
     $output = ResolveConfig::forLayout($config);
+    $config['key'] = 'field_someLayout';
     $this->assertEquals($config, $output);
   }
 
@@ -52,6 +53,7 @@ class ResolveConfigForLayoutTest extends TestCase {
     ->once()
     ->andReturn($someLayout);
     $output = ResolveConfig::forLayout($config);
+    $someLayout['key'] = 'field_someLayout';
     $this->assertEquals($someLayout, $output);
   }
   function testForLayoutWithValidSubField() {
@@ -66,6 +68,7 @@ class ResolveConfigForLayoutTest extends TestCase {
       'sub_fields' => [$subFieldConfig]
     ];
     $output = ResolveConfig::forLayout($config);
+    $subFieldConfig['key'] = 'field_someLayout_subField';
     $this->assertEquals($subFieldConfig, $output['sub_fields'][0]);
   }
 
