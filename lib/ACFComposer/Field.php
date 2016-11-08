@@ -6,6 +6,9 @@ use Exception;
 
 class Field {
   function __construct($config) {
+    if(is_string($config)) {
+      $config = apply_filters($config, null);
+    }
     $this->config = $this->validateConfig($config);
   }
 

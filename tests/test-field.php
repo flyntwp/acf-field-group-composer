@@ -4,6 +4,7 @@ require_once dirname(__DIR__) . '/lib/ACFComposer/Field.php';
 
 use ACFComposer\TestCase;
 use ACFComposer\Field;
+use Brain\Monkey\WP\Filters;
 
 class FieldTest extends TestCase {
   function testAssignsValidConfig() {
@@ -52,5 +53,19 @@ class FieldTest extends TestCase {
     ];
     $this->expectException(Exception::class);
     new Field($config);
+  }
+
+  function testGetConfigFromFilter() {
+    $config = 'ACFComposer/Fields/someField';
+    $someField = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType'
+    ];
+    Filters::expectApplied($config)
+    ->once()
+    ->andReturn($someField);
+    $field = new Field($config);
+    $this->assertEquals($someField, $field->config);
   }
 }
