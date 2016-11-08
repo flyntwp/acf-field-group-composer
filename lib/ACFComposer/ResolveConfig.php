@@ -41,6 +41,11 @@ class ResolveConfig {
 
     $keySuffix = empty($parentKeySuffix) ? $output['name'] : "{$parentKeySuffix}_{$output['name']}";
     $output['key'] = "field_{$keySuffix}";
+
+    $output = apply_filters('ACFComposer/resolveEntity', $output);
+    $output = apply_filters("ACFComposer/resolveEntity?name={$output['name']}", $output);
+    $output = apply_filters("ACFComposer/resolveEntity?key={$output['key']}", $output);
+
     $output = self::forNestedEntities($output, $keySuffix);
     return $output;
   }

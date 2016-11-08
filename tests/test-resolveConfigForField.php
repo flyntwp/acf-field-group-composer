@@ -118,4 +118,58 @@ class ResolveConfigForFieldTest extends TestCase {
     $layoutConfig['key'] = 'field_someField_someLayout';
     $this->assertEquals($layoutConfig, $output['layouts'][0]);
   }
+
+  function testAppliesResolveFilterGeneric() {
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType'
+    ];
+    $resolvedConfig = $config;
+    $resolvedConfig['key'] = 'field_someField';
+    Filters::expectApplied('ACFComposer/resolveEntity')
+    ->once()
+    ->with($resolvedConfig)
+    ->andReturn(array_merge($resolvedConfig, ['foo' => 'bar']));
+
+    $output = ResolveConfig::forField($config);
+    $resolvedConfig['foo'] = 'bar';
+    $this->assertEquals($resolvedConfig, $output);
+  }
+
+  function testAppliesResolveFilterByName() {
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType'
+    ];
+    $resolvedConfig = $config;
+    $resolvedConfig['key'] = 'field_someField';
+    Filters::expectApplied('ACFComposer/resolveEntity?name=someField')
+    ->once()
+    ->with($resolvedConfig)
+    ->andReturn(array_merge($resolvedConfig, ['foo' => 'bar']));
+
+    $output = ResolveConfig::forField($config);
+    $resolvedConfig['foo'] = 'bar';
+    $this->assertEquals($resolvedConfig, $output);
+  }
+
+  function testAppliesResolveFilterByKey() {
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType'
+    ];
+    $resolvedConfig = $config;
+    $resolvedConfig['key'] = 'field_someField';
+    Filters::expectApplied('ACFComposer/resolveEntity?key=field_someField')
+    ->once()
+    ->with($resolvedConfig)
+    ->andReturn(array_merge($resolvedConfig, ['foo' => 'bar']));
+
+    $output = ResolveConfig::forField($config);
+    $resolvedConfig['foo'] = 'bar';
+    $this->assertEquals($resolvedConfig, $output);
+  }
 }
