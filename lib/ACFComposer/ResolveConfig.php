@@ -13,11 +13,7 @@ class ResolveConfig {
     $output['fields'] = array_map(function($field) use ($keySuffix){
       return self::forField($field, $keySuffix);
     }, $output['fields']);
-    $output['location'] = array_map(function($locationArray) {
-      return array_map(function($location) {
-        return self::forLocation($location);
-      }, $locationArray);
-    }, $output['location']);
+    $output['location'] = array_map('self::mapLocation', $output['location']);
     return $output;
   }
 
@@ -74,5 +70,9 @@ class ResolveConfig {
       throw new Exception('Field config must not contain a \'key\' property.');
     }
     return $config;
+  }
+
+  protected static function mapLocation($locationArray) {
+    return array_map('self::forLocation', $locationArray);
   }
 }
