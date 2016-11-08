@@ -68,4 +68,35 @@ class ResolveConfigForFieldTest extends TestCase {
     $output = ResolveConfig::forField($config);
     $this->assertEquals($someField, $output);
   }
+
+  function testForFieldWithValidSubField() {
+    $subFieldConfig = [
+      'name' => 'subField',
+      'label' => 'Sub Field',
+      'type' => 'someType'
+    ];
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType',
+      'sub_fields' => [$subFieldConfig]
+    ];
+    $output = ResolveConfig::forField($config);
+    $this->assertEquals($subFieldConfig, $output['sub_fields'][0]);
+  }
+
+  function testForFieldFailWithInvalidSubField() {
+    $subFieldConfig = [
+      'name' => 'subField',
+      'label' => 'Sub Field'
+    ];
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType',
+      'sub_fields' => [$subFieldConfig]
+    ];
+    $this->expectException(Exception::class);
+    ResolveConfig::forField($config);
+  }
 }

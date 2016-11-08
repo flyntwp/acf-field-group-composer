@@ -54,5 +54,33 @@ class ResolveConfigForLayoutTest extends TestCase {
     $output = ResolveConfig::forLayout($config);
     $this->assertEquals($someLayout, $output);
   }
+  function testForLayoutWithValidSubField() {
+    $subFieldConfig = [
+      'name' => 'subField',
+      'label' => 'Sub Field',
+      'type' => 'someType'
+    ];
+    $config = [
+      'name' => 'someLayout',
+      'label' => 'Some Layout',
+      'sub_fields' => [$subFieldConfig]
+    ];
+    $output = ResolveConfig::forLayout($config);
+    $this->assertEquals($subFieldConfig, $output['sub_fields'][0]);
+  }
+
+  function testForLayoutFailWithInvalidSubField() {
+    $subFieldConfig = [
+      'name' => 'subField',
+      'label' => 'Sub Field'
+    ];
+    $config = [
+      'name' => 'someLayout',
+      'label' => 'Some Layout',
+      'sub_fields' => [$subFieldConfig]
+    ];
+    $this->expectException(Exception::class);
+    ResolveConfig::forLayout($config);
+  }
 
 }
