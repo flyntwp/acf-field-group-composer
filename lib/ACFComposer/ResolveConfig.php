@@ -6,17 +6,18 @@ use Exception;
 
 class ResolveConfig {
   public static function forField($config) {
-    if(is_string($config)) {
-      $config = apply_filters($config, null);
-    }
-    return self::validateConfig($config, ['name', 'label', 'type']);
+    return self::forGeneric($config, ['name', 'label', 'type']);
   }
 
   public static function forLayout($config) {
+    return self::forGeneric($config, ['name', 'label']);
+  }
+
+  protected static function forGeneric($config, $requiredAttributes) {
     if(is_string($config)) {
       $config = apply_filters($config, null);
     }
-    return self::validateConfig($config, ['name', 'label']);
+    return self::validateConfig($config, $requiredAttributes);
   }
 
   protected static function validateConfig($config, $requiredAttributes = []) {
