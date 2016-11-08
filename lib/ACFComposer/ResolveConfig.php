@@ -5,6 +5,18 @@ namespace ACFComposer;
 use Exception;
 
 class ResolveConfig {
+  public static function forFieldGroup($config) {
+    $output = self::validateConfig($config, ['name', 'title', 'fields', 'location']);
+
+    $keySuffix = $output['name'];
+    $output['key'] = "group_{$keySuffix}";
+    $output = self::forNestedEntities($output, $keySuffix);
+    $output['fields'] = array_map(function($field) use ($keySuffix){
+      return self::forField($field, $keySuffix);
+    }, $output['fields']);
+    return $output;
+  }
+
   public static function forField($config, $keySuffix = '') {
     return self::forEntity($config, ['name', 'label', 'type'], $keySuffix);
   }
