@@ -9,19 +9,22 @@ class ResolveConfig {
     if(is_string($config)) {
       $config = apply_filters($config, null);
     }
-    return self::validateConfig($config);
+    return self::validateConfig($config, ['name', 'label', 'type']);
   }
 
-  protected static function validateConfig($config) {
-    if(!array_key_exists('name', $config)) {
-      throw new Exception('Field config needs to contain a \'name\' property.');
+  public static function forLayout($config) {
+    if(is_string($config)) {
+      $config = apply_filters($config, null);
     }
-    if(!array_key_exists('label', $config)) {
-      throw new Exception('Field config needs to contain a \'label\' property.');
-    }
-    if(!array_key_exists('type', $config)) {
-      throw new Exception('Field config needs to contain a \'type\' property.');
-    }
+    return self::validateConfig($config, ['name', 'label']);
+  }
+
+  protected static function validateConfig($config, $requiredAttributes = []) {
+    array_walk($requiredAttributes, function($key) use ($config){
+      if(!array_key_exists($key, $config)) {
+        throw new Exception("Field config needs to contain a \'{$key}\' property.");
+      }
+    });
     if(array_key_exists('key', $config)) {
       throw new Exception('Field config must not contain a \'key\' property.');
     }

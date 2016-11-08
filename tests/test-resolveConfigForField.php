@@ -6,7 +6,7 @@ use ACFComposer\TestCase;
 use ACFComposer\ResolveConfig;
 use Brain\Monkey\WP\Filters;
 
-class ResolveFieldConfigTest extends TestCase {
+class ResolveFieldConfigForFieldTest extends TestCase {
   function testForFieldWithValidConfig() {
     $config = [
       'name' => 'someField',
