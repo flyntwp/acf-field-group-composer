@@ -1,50 +1,50 @@
 <?php
 
-require_once dirname(__DIR__) . '/lib/ACFComposer/Field.php';
+require_once dirname(__DIR__) . '/lib/ACFComposer/ResolveConfig.php';
 
 use ACFComposer\TestCase;
-use ACFComposer\Field;
+use ACFComposer\ResolveConfig;
 use Brain\Monkey\WP\Filters;
 
-class FieldTest extends TestCase {
-  function testAssignsValidConfig() {
+class ResolveFieldConfigTest extends TestCase {
+  function testForFieldWithValidConfig() {
     $config = [
       'name' => 'someField',
       'label' => 'Some Field',
       'type' => 'someType'
     ];
-    $field = new Field($config);
-    $this->assertEquals($config, $field->config);
+    $output = ResolveConfig::forField($config);
+    $this->assertEquals($config, $output);
   }
 
-  function testFailsWithoutName() {
+  function testForFieldFailsWithoutName() {
     $config = [
       'label' => 'Some Field',
       'type' => 'someType'
     ];
     $this->expectException(Exception::class);
-    new Field($config);
+    ResolveConfig::forField($config);
   }
 
-  function testFailsWithoutLabel() {
+  function testForFieldFailsWithoutLabel() {
     $config = [
       'name' => 'someField',
       'type' => 'someType'
     ];
     $this->expectException(Exception::class);
-    new Field($config);
+    ResolveConfig::forField($config);
   }
 
-  function testFailsWithoutType() {
+  function testForFieldFailsWithoutType() {
     $config = [
       'name' => 'someField',
       'label' => 'Some Field'
     ];
     $this->expectException(Exception::class);
-    new Field($config);
+    ResolveConfig::forField($config);
   }
 
-  function testFailsWithKey() {
+  function testForFieldFailsWithKey() {
     $config = [
       'name' => 'someField',
       'label' => 'Some Field',
@@ -52,10 +52,10 @@ class FieldTest extends TestCase {
       'key' => 'someKey'
     ];
     $this->expectException(Exception::class);
-    new Field($config);
+    ResolveConfig::forField($config);
   }
 
-  function testGetConfigFromFilter() {
+  function testForFieldGetConfigFromFilter() {
     $config = 'ACFComposer/Fields/someField';
     $someField = [
       'name' => 'someField',
@@ -65,7 +65,7 @@ class FieldTest extends TestCase {
     Filters::expectApplied($config)
     ->once()
     ->andReturn($someField);
-    $field = new Field($config);
-    $this->assertEquals($someField, $field->config);
+    $output = ResolveConfig::forField($config);
+    $this->assertEquals($someField, $output);
   }
 }

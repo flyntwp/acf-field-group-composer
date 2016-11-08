@@ -4,15 +4,15 @@ namespace ACFComposer;
 
 use Exception;
 
-class Field {
-  function __construct($config) {
+class ResolveConfig {
+  public static function forField($config) {
     if(is_string($config)) {
       $config = apply_filters($config, null);
     }
-    $this->config = $this->validateConfig($config);
+    return self::validateConfig($config);
   }
 
-  protected function validateConfig($config) {
+  protected static function validateConfig($config) {
     if(!array_key_exists('name', $config)) {
       throw new Exception('Field config needs to contain a \'name\' property.');
     }
