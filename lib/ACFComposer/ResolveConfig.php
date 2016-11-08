@@ -10,11 +10,19 @@ class ResolveConfig {
 
     $keySuffix = $output['name'];
     $output['key'] = "group_{$keySuffix}";
-    $output = self::forNestedEntities($output, $keySuffix);
     $output['fields'] = array_map(function($field) use ($keySuffix){
       return self::forField($field, $keySuffix);
     }, $output['fields']);
+    $output['location'] = array_map(function($locationArray) {
+      return array_map(function($location) {
+        return self::forLocation($location);
+      }, $locationArray);
+    }, $output['location']);
     return $output;
+  }
+
+  public static function forLocation($config) {
+    return self::validateConfig($config, ['param', 'operator', 'value']);
   }
 
   public static function forField($config, $keySuffix = '') {

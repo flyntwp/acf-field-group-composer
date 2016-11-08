@@ -32,4 +32,48 @@ class ResolveConfigForFieldGroupTest extends TestCase {
     $config['fields'] = [$fieldConfig];
     $this->assertEquals($config, $output);
   }
+
+  function testForFieldGroupFailsWithInvalidField() {
+    $fieldConfig = [
+      'name' => 'someField',
+      'label' => 'Some Field'
+    ];
+    $locationConfig = [
+      'param' => 'someParam',
+      'operator' => 'someOperator',
+      'value' => 'someValue'
+    ];
+    $config = [
+      'name' => 'someGroup',
+      'title' => 'Some Group',
+      'fields' => [$fieldConfig],
+      'location' => [
+        [$locationConfig]
+      ]
+    ];
+    $this->expectException(Exception::class);
+    ResolveConfig::forFieldGroup($config);
+  }
+
+  function testForFieldGroupFailsWithInvalidLocation() {
+    $fieldConfig = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType'
+    ];
+    $locationConfig = [
+      'operator' => 'someOperator',
+      'value' => 'someValue'
+    ];
+    $config = [
+      'name' => 'someGroup',
+      'title' => 'Some Group',
+      'fields' => [$fieldConfig],
+      'location' => [
+        [$locationConfig]
+      ]
+    ];
+    $this->expectException(Exception::class);
+    ResolveConfig::forFieldGroup($config);
+  }
 }
