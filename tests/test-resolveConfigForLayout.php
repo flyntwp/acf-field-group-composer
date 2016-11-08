@@ -6,11 +6,11 @@ use ACFComposer\TestCase;
 use ACFComposer\ResolveConfig;
 use Brain\Monkey\WP\Filters;
 
-class ResolveFieldConfigForLayoutTest extends TestCase {
+class ResolveConfigForLayoutTest extends TestCase {
   function testForLayoutWithValidConfig() {
     $config = [
-      'name' => 'someField',
-      'label' => 'Some Field'
+      'name' => 'someLayout',
+      'label' => 'Some Layout'
     ];
     $output = ResolveConfig::forLayout($config);
     $this->assertEquals($config, $output);
@@ -18,7 +18,7 @@ class ResolveFieldConfigForLayoutTest extends TestCase {
 
   function testForLayoutFailsWithoutName() {
     $config = [
-      'label' => 'Some Field'
+      'label' => 'Some Layout'
     ];
     $this->expectException(Exception::class);
     ResolveConfig::forLayout($config);
@@ -26,7 +26,7 @@ class ResolveFieldConfigForLayoutTest extends TestCase {
 
   function testForLayoutFailsWithoutLabel() {
     $config = [
-      'name' => 'someField'
+      'name' => 'someLayout'
     ];
     $this->expectException(Exception::class);
     ResolveConfig::forLayout($config);
@@ -34,8 +34,8 @@ class ResolveFieldConfigForLayoutTest extends TestCase {
 
   function testForLayoutFailsWithKey() {
     $config = [
-      'name' => 'someField',
-      'label' => 'Some Field',
+      'name' => 'someLayout',
+      'label' => 'Some Layout',
       'key' => 'someKey'
     ];
     $this->expectException(Exception::class);
@@ -43,16 +43,16 @@ class ResolveFieldConfigForLayoutTest extends TestCase {
   }
 
   function testForLayoutGetConfigFromFilter() {
-    $config = 'ACFComposer/Fields/someField';
-    $someField = [
-      'name' => 'someField',
-      'label' => 'Some Field',
-      'type' => 'someType'
+    $config = 'ACFComposer/Layout/someLayout';
+    $someLayout = [
+      'name' => 'someLayout',
+      'label' => 'Some Layout'
     ];
     Filters::expectApplied($config)
     ->once()
-    ->andReturn($someField);
+    ->andReturn($someLayout);
     $output = ResolveConfig::forLayout($config);
-    $this->assertEquals($someField, $output);
+    $this->assertEquals($someLayout, $output);
   }
+
 }
