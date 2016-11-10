@@ -300,4 +300,49 @@ class ResolveConfigForFieldTest extends TestCase {
     $config['sub_fields'] = [$subFieldOne];
     $this->assertEquals($config, $output);
   }
+
+  function testResolveMultipleFieldsFromFilter() {
+    $filter = 'ACFComposer/Fields/subField';
+    $subFieldTwo = [
+      'name' => 'subFieldTwo',
+      'label' => 'Sub Field Two',
+      'type' => 'someType',
+    ];
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType',
+      'sub_fields' => [
+        $filter,
+        $subFieldTwo
+      ]
+    ];
+    $filterFieldOne = [
+      'name' => 'filterFieldOne',
+      'label' => 'Filter Field One',
+      'type' => 'someType',
+    ];
+    $filterFieldTwo = [
+      'name' => 'filterFieldTwo',
+      'label' => 'Filter Field Two',
+      'type' => 'someType',
+    ];
+    Filters::expectApplied($filter)
+    ->once()
+    ->andReturn([
+      $filterFieldOne,
+      $filterFieldTwo
+    ]);
+    $output = ResolveConfig::forField($config);
+    $subFieldTwo['key'] = 'field_someField_subFieldTwo';
+    $filterFieldOne['key'] = 'field_someField_filterFieldOne';
+    $filterFieldTwo['key'] = 'field_someField_filterFieldTwo';
+    $config['key'] = 'field_someField';
+    $config['sub_fields'] = [
+      $filterFieldOne,
+      $filterFieldTwo,
+      $subFieldTwo
+    ];
+    $this->assertEquals($config, $output);
+  }
 }

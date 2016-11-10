@@ -33,6 +33,12 @@ class ResolveConfig {
     if (is_string($config)) {
       $config = apply_filters($config, null);
     }
+    if (!self::isAssoc($config)) {
+      return array_map(function ($singleConfig) use ($requiredAttributes, $parentKeys) {
+        return self::forEntity($singleConfig, $requiredAttributes, $parentKeys);
+      }, $config);
+    }
+
     $output = self::validateConfig($config, $requiredAttributes);
 
     $output = self::forConditionalLogic($output, $parentKeys);
@@ -51,14 +57,30 @@ class ResolveConfig {
 
   protected static function forNestedEntities($config, $parentKeys) {
     if (array_key_exists('sub_fields', $config)) {
-      $config['sub_fields'] = array_map(function ($field) use ($parentKeys) {
-        return self::forField($field, $parentKeys);
-      }, $config['sub_fields']);
+      $config['sub_fields'] = array_reduce($config['sub_fields'], function ($output, $field) use ($parentKeys) {
+        $fields = self::forField($field, $parentKeys);
+        if (!self::isAssoc($fields)) {
+          foreach ($fields as $field) {
+            array_push($output, $field);
+          }
+        } else {
+          array_push($output, $fields);
+        }
+        return $output;
+      }, []);
     }
     if (array_key_exists('layouts', $config)) {
-      $config['layouts'] = array_map(function ($layout) use ($parentKeys) {
-        return self::forLayout($layout, $parentKeys);
-      }, $config['layouts']);
+      $config['layouts'] = array_reduce($config['layouts'], function ($output, $layout) use ($parentKeys) {
+        $layouts = self::forLayout($layout, $parentKeys);
+        if (!self::isAssoc($layouts)) {
+          foreach ($layouts as $layout) {
+            array_push($output, $layout);
+          }
+        } else {
+          array_push($output, $layouts);
+        }
+        return $output;
+      }, []);
     }
     return $config;
   }
@@ -99,5 +121,10 @@ class ResolveConfig {
       }, $config['conditional_logic']);
     }
     return $config;
+  }
+
+  protected static function isAssoc(array $arr) {
+    if (array() === $arr) return false;
+    return array_keys($arr) !== range(0, count($arr) - 1);
   }
 }
