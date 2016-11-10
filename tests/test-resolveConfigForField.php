@@ -216,4 +216,88 @@ class ResolveConfigForFieldTest extends TestCase {
     ];
     $this->assertEquals($config, $output);
   }
+
+  function testResolveConditionalLogicOnParentLevel() {
+    $subFieldOne = [
+      'name' => 'subField1',
+      'label' => 'Sub Field 1',
+      'type' => 'someType',
+    ];
+    $subFieldWithConditional = [
+      'name' => 'subField2',
+      'label' => 'Sub Field 2',
+      'type' => 'someType',
+      'conditional_logic' => [
+        [
+          [
+            'fieldPath' => '../subField1',
+            'operator' => 'someOp',
+            'value' => 'someValue'
+          ]
+        ]
+      ]
+    ];
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType',
+      'sub_fields' => [
+        $subFieldOne,
+        $subFieldWithConditional
+      ]
+    ];
+
+    $output = ResolveConfig::forField($config);
+
+    $config['key'] = 'field_someField';
+    $subFieldOne['key'] = 'field_someField_subField1';
+    $subFieldWithConditional['key'] = 'field_someField_subField2';
+    $subFieldWithConditional['conditional_logic'][0][0]['field'] = 'field_subField1';
+    unset($subFieldWithConditional['conditional_logic'][0][0]['fieldPath']);
+    $config['sub_fields'] = [
+      $subFieldOne,
+      $subFieldWithConditional
+    ];
+    $this->assertEquals($config, $output);
+  }
+
+  function testResolveConditionalLogicOnParentsParentLevel() {
+    $subFieldWithConditional = [
+      'name' => 'subField2',
+      'label' => 'Sub Field 2',
+      'type' => 'someType',
+      'conditional_logic' => [
+        [
+          [
+            'fieldPath' => '../../subField1',
+            'operator' => 'someOp',
+            'value' => 'someValue'
+          ]
+        ]
+      ]
+    ];
+    $subFieldOne = [
+      'name' => 'subField1',
+      'label' => 'Sub Field 1',
+      'type' => 'someType',
+      'sub_fields' => [$subFieldWithConditional]
+    ];
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType',
+      'sub_fields' => [$subFieldOne]
+    ];
+
+    $output = ResolveConfig::forField($config);
+
+    $config['key'] = 'field_someField';
+    $subFieldOne['key'] = 'field_someField_subField1';
+    $subFieldWithConditional['key'] = 'field_someField_subField1_subField2';
+    $subFieldWithConditional['conditional_logic'][0][0]['field'] = 'field_subField1';
+    unset($subFieldWithConditional['conditional_logic'][0][0]['fieldPath']);
+    $subFieldOne['sub_fields'] = [$subFieldWithConditional];
+    $config['sub_fields'] = [$subFieldOne];
+    $this->assertEquals($config, $output);
+  }
 }
