@@ -1,17 +1,44 @@
 <?xml version="1.0"?>
 <ruleset name="ACFComposer PHP Coding Standards">
-	<description>Coding Standards for ACFComposer</description>
+  <description>Coding Standards for ACFComposer</description>
 
-	<exclude-pattern>*/node_modules/*</exclude-pattern>
-	<exclude-pattern>*/vendor/*</exclude-pattern>
+  <exclude-pattern>*/node_modules/*</exclude-pattern>
+  <exclude-pattern>*/vendor/*</exclude-pattern>
 
-	<rule ref="Zend">
-		<exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman" />
-		<exclude name="PEAR.Classes.ClassDeclaration" />
-	</rule>
+  <rule ref="PEAR.WhiteSpace.ScopeIndent">
+    <properties>
+      <property name="indent" value="2"/>
+    </properties>
+  </rule>
 
-	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
-	<rule ref="Generic.Classes.OpeningBraceSameLine" />
+  <rule ref="PEAR.Functions.FunctionCallSignature">
+    <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
+    <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
+     <properties>
+      <property name="indent" value="2" />
+    </properties>
+  </rule>
+
+  <rule ref="Zend">
+    <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman" />
+    <exclude name="PEAR.Classes.ClassDeclaration" />
+  </rule>
+
+  <rule ref="Generic.Files.LineLength">
+    <properties>
+     <property name="lineLimit" value="120"/>
+     <property name="absoluteLineLimit" value="120"/>
+    </properties>
+  </rule>
+
+  <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
+  <rule ref="Generic.Classes.OpeningBraceSameLine" />
+  <rule ref="Squiz.Functions.MultiLineFunctionDeclaration">
+    <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine" />
+    <properties>
+      <property name="indent" value="2" />
+    </properties>
+  </rule>
 
 
 </ruleset>

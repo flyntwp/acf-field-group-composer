@@ -18,5 +18,5 @@ before_script:
   - composer install
 
 script:
-  - vendor/bin/phpcs --standard=phpcs.ruleset.xml .
+  - vendor/bin/phpcs -s --standard=phpcs.ruleset.xml .
   - vendor/bin/phpunit
