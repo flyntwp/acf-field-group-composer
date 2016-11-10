@@ -15,17 +15,8 @@ php:
 
 before_script:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then
-      composer global require "phpunit/phpunit=5.6.*"
-    else
-      composer global require "phpunit/phpunit=4.8.*"
-    fi
-  - |
-    composer global require wp-coding-standards/wpcs
-    phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
   - composer install
 
 script:
-  # - phpcs --standard=phpcs.ruleset.xml $(find . -name '*.php')
-  - phpunit
+  - vendor/bin/phpcs --standard=phpcs.ruleset.xml .
+  - vendor/bin/phpunit
