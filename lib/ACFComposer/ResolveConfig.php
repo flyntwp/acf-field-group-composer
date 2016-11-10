@@ -40,6 +40,8 @@ class ResolveConfig {
       : "{$parentKeySuffix}_{$output['name']}";
     $output['key'] = "field_{$keySuffix}";
 
+    $output = self::forConditionalLogic($output, $parentKeySuffix);
+
     $output = apply_filters('ACFComposer/resolveEntity', $output);
     $output = apply_filters("ACFComposer/resolveEntity?name={$output['name']}", $output);
     $output = apply_filters("ACFComposer/resolveEntity?key={$output['key']}", $output);
@@ -75,5 +77,20 @@ class ResolveConfig {
 
   protected static function mapLocation($locationArray) {
     return array_map('self::forLocation', $locationArray);
+  }
+
+  protected static function forConditionalLogic($config, $keySuffix) {
+    if (array_key_exists('conditional_logic', $config)) {
+      $config['conditional_logic'] = array_map(function ($conditionGroup) use ($keySuffix) {
+        return array_map(function ($condition) use ($keySuffix) {
+          if (array_key_exists('fieldPath', $condition)) {
+            $condition['field'] = "field_{$keySuffix}_{$condition['fieldPath']}";
+            unset($condition['fieldPath']);
+          }
+          return $condition;
+        }, $conditionGroup);
+      }, $config['conditional_logic']);
+    }
+    return $config;
   }
 }

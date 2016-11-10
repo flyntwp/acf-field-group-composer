@@ -172,4 +172,48 @@ class ResolveConfigForFieldTest extends TestCase {
     $resolvedConfig['foo'] = 'bar';
     $this->assertEquals($resolvedConfig, $output);
   }
+
+  function testResolveConditionalLogicOnSameLevel() {
+    $subFieldOne = [
+      'name' => 'subField1',
+      'label' => 'Sub Field 1',
+      'type' => 'someType',
+    ];
+    $subFieldWithConditional = [
+      'name' => 'subField2',
+      'label' => 'Sub Field 2',
+      'type' => 'someType',
+      'conditional_logic' => [
+        [
+          [
+            'fieldPath' => 'subField1',
+            'operator' => 'someOp',
+            'value' => 'someValue'
+          ]
+        ]
+      ]
+    ];
+    $config = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType',
+      'sub_fields' => [
+        $subFieldOne,
+        $subFieldWithConditional
+      ]
+    ];
+
+    $output = ResolveConfig::forField($config);
+
+    $config['key'] = 'field_someField';
+    $subFieldOne['key'] = 'field_someField_subField1';
+    $subFieldWithConditional['key'] = 'field_someField_subField2';
+    $subFieldWithConditional['conditional_logic'][0][0]['field'] = 'field_someField_subField1';
+    unset($subFieldWithConditional['conditional_logic'][0][0]['fieldPath']);
+    $config['sub_fields'] = [
+      $subFieldOne,
+      $subFieldWithConditional
+    ];
+    $this->assertEquals($config, $output);
+  }
 }
