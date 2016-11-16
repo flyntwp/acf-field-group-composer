@@ -10,9 +10,17 @@ class ResolveConfig {
 
     $keySuffix = $output['name'];
     $output['key'] = "group_{$keySuffix}";
-    $output['fields'] = array_map(function ($field) use ($keySuffix) {
-      return self::forField($field, [$keySuffix]);
-    }, $output['fields']);
+    $output['fields'] = array_reduce($config['fields'], function ($carry, $fieldConfig) use ($keySuffix) {
+      $fields = self::forField($fieldConfig, [$keySuffix]);
+      if (!self::isAssoc($fields)) {
+        foreach ($fields as $field) {
+          array_push($carry, $field);
+        }
+      } else {
+        array_push($carry, $fields);
+      }
+      return $carry;
+    }, []);
     $output['location'] = array_map('self::mapLocation', $output['location']);
     return $output;
   }
@@ -31,6 +39,7 @@ class ResolveConfig {
 
   protected static function forEntity($config, $requiredAttributes, $parentKeys = []) {
     if (is_string($config)) {
+      // TODO catch unapplied filters and show warning, then get out of this function to prevent exceptions
       $config = apply_filters($config, null);
     }
     if (!self::isAssoc($config)) {
