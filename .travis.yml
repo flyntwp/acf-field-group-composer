@@ -1,5 +1,10 @@
 language: php
 
+sudo: false
+
+git:
+  depth: 3
+
 notifications:
   email:
     on_success: never
@@ -9,14 +14,38 @@ branches:
   only:
     - master
 
+env:
+  - COMPOSER_FLAGS="--prefer-stable --prefer-source"
+
 php:
   - 5.6
   - 7.0
+  - 7.1
+  - nightly
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 5.6
+      env:
+        - COMPOSER_FLAGS="--prefer-lowest --prefer-stable --prefer-source"
+    - php: 5.6
+      env:
+        - TEST_VERSION=true
+        - COMPOSER_FLAGS="--prefer-stable --prefer-source"
+  allow_failures:
+    - php: nightly
 
 before_script:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - composer install
 
+install:
+  - if [[ $TEST_VERSION == true ]]; then travis_retry composer require satooshi/php-coveralls:dev-master $COMPOSER_FLAGS --no-interaction --no-scripts --no-progress ; fi
+
 script:
   - vendor/bin/phpcs -s --standard=phpcs.ruleset.xml .
-  - vendor/bin/phpunit
+  - vendor/bin/phpunit --coverage-clover logs/clover.xml
+
+after_script:
+  - if [[ $TEST_VERSION == true ]]; then travis_retry php vendor/bin/coveralls --verbose ; fi
