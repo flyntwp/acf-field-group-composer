@@ -39,8 +39,13 @@ class ResolveConfig {
 
   protected static function forEntity($config, $requiredAttributes, $parentKeys = []) {
     if (is_string($config)) {
-      // TODO catch unapplied filters and show warning, then get out of this function to prevent exceptions
-      $config = apply_filters($config, null);
+      $filterName = $config;
+      $config = apply_filters($filterName, null);
+
+      if (is_null($config)) {
+        trigger_error("ACFComposer: Filter {$filterName} does not exist!", E_USER_WARNING);
+        return [];
+      }
     }
     if (!self::isAssoc($config)) {
       return array_map(function ($singleConfig) use ($requiredAttributes, $parentKeys) {
