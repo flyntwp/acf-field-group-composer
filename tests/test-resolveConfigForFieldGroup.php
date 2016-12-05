@@ -8,6 +8,7 @@ use Brain\Monkey\WP\Filters;
 
 class ResolveConfigForFieldGroupTest extends TestCase {
   function testForFieldGroupWithValidConfig() {
+    $filterName = 'ACFComposer/Fields/someField';
     $fieldConfig = [
       'name' => 'someField',
       'label' => 'Some Field',
@@ -21,15 +22,23 @@ class ResolveConfigForFieldGroupTest extends TestCase {
     $config = [
       'name' => 'someGroup',
       'title' => 'Some Group',
-      'fields' => [$fieldConfig],
+      'fields' => [
+        $filterName,
+        $fieldConfig
+      ],
       'location' => [
         [$locationConfig]
       ]
     ];
+
+    Filters::expectApplied($filterName)
+    ->once()
+    ->andReturn($fieldConfig);
+
     $output = ResolveConfig::forFieldGroup($config);
     $fieldConfig['key'] = 'field_someGroup_someField';
     $config['key'] = 'group_someGroup';
-    $config['fields'] = [$fieldConfig];
+    $config['fields'] = [$fieldConfig, $fieldConfig];
     $this->assertEquals($config, $output);
   }
 
