@@ -5,8 +5,8 @@ filter:
   excluded_paths: [tests/*, vendor/*]
 
 before_commands:
-  - 'composer self-update'
-  - 'composer update --prefer-stable --prefer-source --no-interaction --no-scripts --no-progress --no-suggest'
+  # - 'composer self-update'
+  - 'composer install --prefer-stable --prefer-source --no-interaction --no-scripts --no-progress --no-suggest'
 
 tools:
   php_code_coverage: false
