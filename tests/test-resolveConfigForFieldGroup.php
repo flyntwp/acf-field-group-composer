@@ -14,6 +14,18 @@ class ResolveConfigForFieldGroupTest extends TestCase {
       'label' => 'Some Field',
       'type' => 'someType'
     ];
+    $fieldConfigMulti = [
+      [
+        'name' => 'someField1',
+        'label' => 'Some Field1',
+        'type' => 'someType'
+      ],
+      [
+        'name' => 'someField2',
+        'label' => 'Some Field2',
+        'type' => 'someType'
+      ]
+    ];
     $locationConfig = [
       'param' => 'someParam',
       'operator' => 'someOperator',
@@ -24,7 +36,8 @@ class ResolveConfigForFieldGroupTest extends TestCase {
       'title' => 'Some Group',
       'fields' => [
         $filterName,
-        $fieldConfig
+        $fieldConfig,
+        $fieldConfigMulti
       ],
       'location' => [
         [$locationConfig]
@@ -37,8 +50,10 @@ class ResolveConfigForFieldGroupTest extends TestCase {
 
     $output = ResolveConfig::forFieldGroup($config);
     $fieldConfig['key'] = 'field_someGroup_someField';
+    $fieldConfigMulti[0]['key'] = 'field_someGroup_someField1';
+    $fieldConfigMulti[1]['key'] = 'field_someGroup_someField2';
     $config['key'] = 'group_someGroup';
-    $config['fields'] = [$fieldConfig, $fieldConfig];
+    $config['fields'] = [$fieldConfig, $fieldConfig, $fieldConfigMulti[0], $fieldConfigMulti[1]];
     $this->assertEquals($config, $output);
   }
 
