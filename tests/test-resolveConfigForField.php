@@ -71,6 +71,24 @@ class ResolveConfigForFieldTest extends TestCase {
     $this->assertEquals($someField, $output);
   }
 
+  function testForFieldTriggerErrorWithoutFilter() {
+    $config = 'ACFComposer/Fields/someField';
+    Filters::expectApplied($config)
+    ->once()
+    ->andReturn(null);
+    $this->expectException('PHPUnit_Framework_Error_Warning');
+    $output = ResolveConfig::forField($config);
+  }
+
+  function testForFieldReturnEmptyArrayWithoutFilter() {
+    $config = 'ACFComposer/Fields/someField';
+    Filters::expectApplied($config)
+    ->once()
+    ->andReturn(null);
+    $output = @ResolveConfig::forField($config);
+    $this->assertEquals($output, []);
+  }
+
   function testForFieldWithValidSubField() {
     $subFieldConfig = [
       'name' => 'subField',

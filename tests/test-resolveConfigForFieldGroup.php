@@ -8,10 +8,23 @@ use Brain\Monkey\WP\Filters;
 
 class ResolveConfigForFieldGroupTest extends TestCase {
   function testForFieldGroupWithValidConfig() {
+    $filterName = 'ACFComposer/Fields/someField';
     $fieldConfig = [
       'name' => 'someField',
       'label' => 'Some Field',
       'type' => 'someType'
+    ];
+    $fieldConfigMulti = [
+      [
+        'name' => 'someField1',
+        'label' => 'Some Field1',
+        'type' => 'someType'
+      ],
+      [
+        'name' => 'someField2',
+        'label' => 'Some Field2',
+        'type' => 'someType'
+      ]
     ];
     $locationConfig = [
       'param' => 'someParam',
@@ -21,15 +34,26 @@ class ResolveConfigForFieldGroupTest extends TestCase {
     $config = [
       'name' => 'someGroup',
       'title' => 'Some Group',
-      'fields' => [$fieldConfig],
+      'fields' => [
+        $filterName,
+        $fieldConfig,
+        $fieldConfigMulti
+      ],
       'location' => [
         [$locationConfig]
       ]
     ];
+
+    Filters::expectApplied($filterName)
+    ->once()
+    ->andReturn($fieldConfig);
+
     $output = ResolveConfig::forFieldGroup($config);
     $fieldConfig['key'] = 'field_someGroup_someField';
+    $fieldConfigMulti[0]['key'] = 'field_someGroup_someField1';
+    $fieldConfigMulti[1]['key'] = 'field_someGroup_someField2';
     $config['key'] = 'group_someGroup';
-    $config['fields'] = [$fieldConfig];
+    $config['fields'] = [$fieldConfig, $fieldConfig, $fieldConfigMulti[0], $fieldConfigMulti[1]];
     $this->assertEquals($config, $output);
   }
 
