@@ -40,7 +40,13 @@ class ResolveConfig {
   protected static function forEntity($config, $requiredAttributes, $parentKeys = []) {
     if (is_string($config)) {
       $filterName = $config;
-      $config = apply_filters($filterName, null);
+      $filterParts = explode('#', $filterName);
+      if (isset($filterParts[1])) {
+        $config = apply_filters($filterParts[0], null, $filterParts[1]);
+      } else {
+        $config = apply_filters($filterName, null);
+      }
+
 
       if (is_null($config)) {
         trigger_error("ACFComposer: Filter {$filterName} does not exist!", E_USER_WARNING);
