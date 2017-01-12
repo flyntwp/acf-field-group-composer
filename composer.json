@@ -6,13 +6,13 @@
       "email": "hello@bleech.de"
     }
   ],
-  "require": {},
+  "require": {
+    "composer/installers": "~1.0"
+  },
   "require-dev": {
     "phpunit/phpunit": "^5.6",
     "brain/monkey": "1.*",
     "squizlabs/php_codesniffer": "~2.0"
   },
-  "autoload": {
-    "files": ["acf-field-group-composer.php"]
-  }
+  "type": "wordpress-plugin"
 }
