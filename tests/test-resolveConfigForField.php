@@ -64,6 +64,24 @@ class ResolveConfigForFieldTest extends TestCase {
       'type' => 'someType'
     ];
     Filters::expectApplied($config)
+    ->with(null)
+    ->once()
+    ->andReturn($someField);
+    $output = ResolveConfig::forField($config);
+    $someField['key'] = "field_someField";
+    $this->assertEquals($someField, $output);
+  }
+
+  function testForFieldGetConfigFromFilterWithArguments() {
+    $config = 'ACFComposer/Fields/someField#argument';
+    $filter = 'ACFComposer/Fields/someField';
+    $someField = [
+      'name' => 'someField',
+      'label' => 'Some Field',
+      'type' => 'someType'
+    ];
+    Filters::expectApplied($filter)
+    ->with(null, 'argument')
     ->once()
     ->andReturn($someField);
     $output = ResolveConfig::forField($config);
