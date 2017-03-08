@@ -72,8 +72,8 @@ class ResolveConfigForFieldTest extends TestCase {
     $this->assertEquals($someField, $output);
   }
 
-  function testForFieldGetConfigFromFilterWithArguments() {
-    $config = 'ACFComposer/Fields/someField#argument';
+  function testForFieldGetConfigFromFilterWithArgument() {
+    $config = 'ACFComposer/Fields/someField#prefix';
     $filter = 'ACFComposer/Fields/someField';
     $someField = [
       'name' => 'someField',
@@ -81,11 +81,39 @@ class ResolveConfigForFieldTest extends TestCase {
       'type' => 'someType'
     ];
     Filters::expectApplied($filter)
-    ->with(null, 'argument')
+    ->with(null, 'prefix')
     ->once()
     ->andReturn($someField);
     $output = ResolveConfig::forField($config);
-    $someField['key'] = "field_someField";
+    $someField['name'] = "prefix_someField";
+    $someField['key'] = "field_prefix_someField";
+    $this->assertEquals($someField, $output);
+  }
+
+  function testMultipleForFieldGetConfigFromFilterWithArgument() {
+    $config = 'ACFComposer/Fields/someField#prefix';
+    $filter = 'ACFComposer/Fields/someField';
+    $someField = [
+      [
+        'name' => 'someField',
+        'label' => 'Some Field',
+        'type' => 'someType'
+      ],
+      [
+        'name' => 'someOtherField',
+        'label' => 'Some Field',
+        'type' => 'someType'
+      ]
+    ];
+    Filters::expectApplied($filter)
+    ->with(null, 'prefix')
+    ->once()
+    ->andReturn($someField);
+    $output = ResolveConfig::forField($config);
+    $someField[0]['name'] = "prefix_someField";
+    $someField[0]['key'] = "field_prefix_someField";
+    $someField[1]['name'] = "prefix_someOtherField";
+    $someField[1]['key'] = "field_prefix_someOtherField";
     $this->assertEquals($someField, $output);
   }
 

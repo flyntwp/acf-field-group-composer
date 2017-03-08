@@ -42,7 +42,16 @@ class ResolveConfig {
       $filterName = $config;
       $filterParts = explode('#', $filterName);
       if (isset($filterParts[1])) {
-        $config = apply_filters($filterParts[0], null, $filterParts[1]);
+        $prefix = $filterParts[1];
+        $config = apply_filters($filterParts[0], null, $prefix);
+        if (!self::isAssoc($config)) {
+          $config = array_map(function ($singleConfig) use ($prefix) {
+            $singleConfig['name'] = $prefix . '_' . $singleConfig['name'];
+            return $singleConfig;
+          }, $config);
+        } else {
+          $config['name'] = $prefix . '_' . $config['name'];
+        }
       } else {
         $config = apply_filters($filterName, null);
       }
