@@ -1,6 +1,6 @@
-preset: recommended
+# preset: recommended
 
-# preset: psr2
+preset: psr2
 
 # enabled:
 #   - binary_operator_spaces
