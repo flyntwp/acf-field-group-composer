@@ -21,19 +21,18 @@ This plugin helps you create reusable ACF fields and field groups with code.
 
 ## Background
 
-ACF provides a great interface to create custom meta boxes in WordPress. However, there are to major downsides using it out of the box.
+ACF provides a great interface to create custom meta boxes in WordPress. However, there are to major downsides using it out of the box:
 
-First, configuring it via its GUI can be cumbersome if you have a lot of custom fields. Also fields created via the GUI are only stored in the database. That means migrating them between different stages of a development setup can only be done by migrating the database as well.
+1. Configuring ACF via its GUI can be cumbersome if you have a lot of custom fields. Also fields created via the GUI are only stored in the database. This means that migrating fields between different stages of a development setup can only be done by migrating the database as well.
+2. The local JSON feature and `add_local_field_group` are handy for checking the config into SCM and deploying it to different environments, but it lacks some customizability, like reusing previously specified fields in different contexts.
 
-Second, the local JSON feature, or `add_local_field_group`, is handy for checking the config into SCM and deploying it to different stages but it lacks some customizability, like reusing already specified fields in different context.
-
-acf-field-group-composer helps circumventing these downsides. It let's you use the build in `add_local_field_group` function, automatically adds unique keys to all fields added, and, if a field is not an array, but a string, it will apply a filter with that name and use the return value as a new field in the config.
+The **acf-field-group-composer** helps circumventing these downsides. It let's you use the build-in `add_local_field_group` function, and automatically adds unique keys to all fields added. Plus, if a field is not an array but a string, it will apply a filter with that name and use the return value as a new field in the config.
 
 ## Install
 
 TODO: install via WordPress instructions
 
-To install via composer, run
+To install via composer, run:
 
 ```bash
 composer require flyntwp/acf-field-group-composer
@@ -41,17 +40,18 @@ composer require flyntwp/acf-field-group-composer
 
 ## Usage
 
-To register a field group run
+To register a field group run:
 
 ```php
 ACFComposer\ACFComposer::registerFieldGroup($config);
 ```
 
 The `$config` variable should be of the same format as the one you would pass to `acf_add_local_field_group`. There are only two things that are different:
-1. You do not have to specify a `key` in any field or group.
-2. A field group needs a unique `name` property.
 
-Following the minimal example [from ACF](https://www.advancedcustomfields.com/resources/register-fields-via-php)
+1. You do not have to specify a `key` in any field or group.
+2. A field group requires a unique `name` property.
+
+Following the minimal example [from ACF](https://www.advancedcustomfields.com/resources/register-fields-via-php):
 
 ```php
 $config = [
@@ -61,7 +61,7 @@ $config = [
     [
       'label' => 'Sub Title',
       'name' => 'sub_title',
-      'type' => 'text',
+      'type' => 'text'
     ]
   ],
   'location' => [
@@ -69,50 +69,21 @@ $config = [
       [
       'param' => 'post_type',
       'operator' => '==',
-      'value' => 'post',
-      ],
-    ],
-  ],
-];
-```
-
-In order to make use of the additional functionality of **acf-field-group-composer** you can extract the specified field and return in a filter. The name of the filter can be anything, however, we recommend a meaningful naming scheme like in the following example.
-
-```php
-add_filter('MyProject/ACF/fields/Field_1', function ($field) {
-  return [
-    'label' => 'Sub Title',
-    'name' => 'sub_title',
-    'type' => 'text',
-  ]
-});
-
-$config = [
-  'name' => 'group_1',
-  'title' => 'My Group',
-  'fields' => [
-    'MyProject/ACF/fields/Field_1'
-  ],
-  'location' => [
-    [
-      [
-      'param' => 'post_type',
-      'operator' => '==',
-      'value' => 'post',
+      'value' => 'post'
       ]
     ]
   ]
 ];
 ```
 
-The same can be done for the location.
+In order to make use of the additional functionality of **acf-field-group-composer** you can extract the specified field and return it in a filter. The name of the filter can be anything, but we recommend a meaningful naming scheme. For example:
 
 ```php
-add_filter('MyProject/ACF/locations/PostTypePost', function ($location) {
+add_filter('MyProject/ACF/fields/field_1', function ($field) {
   return [
-    'param' => 'post_type',
-    'operator' => '==',
-    'value' => 'post',
+    'label' => 'Sub Title',
+    'name' => 'sub_title',
+    'type' => 'text'
   ]
 });
 
@@ -120,32 +91,28 @@ $config = [
   'name' => 'group_1',
   'title' => 'My Group',
   'fields' => [
-    'MyProject/ACF/fields/Field_1'
+    'MyProject/ACF/fields/field_1'
   ],
   'location' => [
     [
-      'MyProject/ACF/locations/PostTypePost'
+      [
+      'param' => 'post_type',
+      'operator' => '==',
+      'value' => 'post'
+      ]
     ]
   ]
 ];
 ```
 
-Combining the previous steps will yield the following result
+The same can be done for the location:
 
 ```php
-add_filter('MyProject/ACF/fields/Field_1', function ($field) {
-  return [
-    'label' => 'Sub Title',
-    'name' => 'sub_title',
-    'type' => 'text',
-  ]
-});
-
-add_filter('MyProject/ACF/locations/PostTypePost', function ($location) {
+add_filter('MyProject/ACF/locations/postTypePost', function ($location) {
   return [
     'param' => 'post_type',
     'operator' => '==',
-    'value' => 'post',
+    'value' => 'post'
   ]
 });
 
@@ -153,11 +120,44 @@ $config = [
   'name' => 'group_1',
   'title' => 'My Group',
   'fields' => [
-    'MyProject/ACF/fields/Field_1'
+    'MyProject/ACF/fields/field_1'
   ],
   'location' => [
     [
-      'MyProject/ACF/locations/PostTypePost'
+      'MyProject/ACF/locations/postTypePost'
+    ]
+  ]
+];
+```
+
+Combining the previous steps will yield the following result:
+
+```php
+add_filter('MyProject/ACF/fields/field_1', function ($field) {
+  return [
+    'label' => 'Sub Title',
+    'name' => 'sub_title',
+    'type' => 'text'
+  ]
+});
+
+add_filter('MyProject/ACF/locations/postTypePost', function ($location) {
+  return [
+    'param' => 'post_type',
+    'operator' => '==',
+    'value' => 'post'
+  ]
+});
+
+$config = [
+  'name' => 'group_1',
+  'title' => 'My Group',
+  'fields' => [
+    'MyProject/ACF/fields/field_1'
+  ],
+  'location' => [
+    [
+      'MyProject/ACF/locations/postTypePost'
     ]
   ]
 ];
@@ -171,7 +171,7 @@ ACFComposer\ACFComposer::registerFieldGroup($config);
 
 #### registerFieldGroup (static)
 
-Main function of this package. Resolves a given field group config and registers an acf field group via `acf_add_local_field_group`.
+The main function of this package. Resolves a given field group config and registers an acf field group via `acf_add_local_field_group`.
 
 ```php
 public static function registerFieldGroup(array $config)
@@ -215,17 +215,17 @@ public static function forLocation(array $config)
 
 This project is maintained by [bleech](https://github.com/bleech).
 
-Main people in charge of the repo are:
+The main people in charge of this repo are:
 
 - [Dominik Tränklein](https://github.com/domtra)
 - [Doğa Gürdal](https://github.com/Qakulukiam)
 
 ## Contribute
 
-To contribute, please use github [issues](https://github.com/bleech/acf-field-group-composer/issues). PRs accepted.
+To contribute, please use github [issues](https://github.com/bleech/acf-field-group-composer/issues). Pull requests are accepted.
 
 Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
 ## License
 
-MIT © bleech
+MIT © [bleech](https://www.bleech.de)
