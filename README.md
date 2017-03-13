@@ -55,12 +55,12 @@ Following the minimal example [from ACF](https://www.advancedcustomfields.com/re
 
 ```php
 $config = [
-  'name' => 'group_1',
+  'name' => 'group1',
   'title' => 'My Group',
   'fields' => [
     [
       'label' => 'Sub Title',
-      'name' => 'sub_title',
+      'name' => 'subTitle',
       'type' => 'text'
     ]
   ],
@@ -79,19 +79,19 @@ $config = [
 In order to make use of the additional functionality of **acf-field-group-composer** you can extract the specified field and return it in a filter. The name of the filter can be anything, but we recommend a meaningful naming scheme. For example:
 
 ```php
-add_filter('MyProject/ACF/fields/field_1', function ($field) {
+add_filter('MyProject/ACF/fields/field1', function ($field) {
   return [
     'label' => 'Sub Title',
-    'name' => 'sub_title',
+    'name' => 'subTitle',
     'type' => 'text'
-  ]
+  ];
 });
 
 $config = [
-  'name' => 'group_1',
+  'name' => 'group1',
   'title' => 'My Group',
   'fields' => [
-    'MyProject/ACF/fields/field_1'
+    'MyProject/ACF/fields/field1'
   ],
   'location' => [
     [
@@ -113,14 +113,14 @@ add_filter('MyProject/ACF/locations/postTypePost', function ($location) {
     'param' => 'post_type',
     'operator' => '==',
     'value' => 'post'
-  ]
+  ];
 });
 
 $config = [
-  'name' => 'group_1',
+  'name' => 'group1',
   'title' => 'My Group',
   'fields' => [
-    'MyProject/ACF/fields/field_1'
+    'MyProject/ACF/fields/field1'
   ],
   'location' => [
     [
@@ -133,12 +133,12 @@ $config = [
 Combining the previous steps will yield the following result:
 
 ```php
-add_filter('MyProject/ACF/fields/field_1', function ($field) {
+add_filter('MyProject/ACF/fields/field1', function ($field) {
   return [
     'label' => 'Sub Title',
-    'name' => 'sub_title',
+    'name' => 'subTitle',
     'type' => 'text'
-  ]
+  ];
 });
 
 add_filter('MyProject/ACF/locations/postTypePost', function ($location) {
@@ -146,14 +146,14 @@ add_filter('MyProject/ACF/locations/postTypePost', function ($location) {
     'param' => 'post_type',
     'operator' => '==',
     'value' => 'post'
-  ]
+  ];
 });
 
 $config = [
-  'name' => 'group_1',
+  'name' => 'group1',
   'title' => 'My Group',
   'fields' => [
-    'MyProject/ACF/fields/field_1'
+    'MyProject/ACF/fields/field1'
   ],
   'location' => [
     [
@@ -164,6 +164,85 @@ $config = [
 
 ACFComposer\ACFComposer::registerFieldGroup($config);
 ```
+
+Executing this code will add a field with the **name** `subTitle` to all posts. The **key** will be a combination of the field group name, potentially all parent field names, and the field's name itself. In this case, that is `field_group1_subTitle`.
+
+### Filter arguments
+
+There is another caveat when working with reusable components in ACF. While the flexible content field from ACF Pro gives you everything you need for adding multiple components of the same type to one field group, this is not possible for regular field groups.
+
+For example, you define a set of fields for a simple WYSIWYG component:
+
+```php
+add_filter('MyProject/ACF/fields/wysiwyg', function ($field) {
+  return [
+    'label' => 'Content',
+    'name' => 'content',
+    'type' => 'wysiwyg'
+  ];
+});
+```
+
+And then want to add it to a field group multiple times:
+
+```php
+$config = [
+  'name' => 'group1',
+  'title' => 'My Group',
+  'fields' => [
+    'MyProject/ACF/fields/wysiwyg',
+    'MyProject/ACF/fields/wysiwyg'
+  ],
+  'location' => [
+    [
+      'MyProject/ACF/locations/postTypePost'
+    ]
+  ]
+];
+
+ACFComposer\ACFComposer::registerFieldGroup($config);
+```
+
+It will result in two wysiwygs being displayed but those would have the same name and thus overwrite each other's data.
+
+In order to fix this, there is the notion of filter arguments. These have to be appended with a `#` to the filter name. Once this is done, the respective filter will be called with the suffix as a second argument, and the field names will be prefixed with that string.
+
+Rewriting the previous example:
+
+```php
+add_filter('MyProject/ACF/fields/wysiwyg', function ($field, $componentName) {
+  return [
+    'label' => 'Content',
+    'name' => 'content',
+    'type' => 'wysiwyg'
+  ];
+}, 10, 2);
+
+$config = [
+  'name' => 'group1',
+  'title' => 'My Group',
+  'fields' => [
+    'MyProject/ACF/fields/wysiwyg#firstWysiwyg',
+    'MyProject/ACF/fields/wysiwyg#secondWysiwyg'
+  ],
+  'location' => [
+    [
+      'MyProject/ACF/locations/postTypePost'
+    ]
+  ]
+];
+
+ACFComposer\ACFComposer::registerFieldGroup($config);
+```
+
+This will result in the following two fields being added to all posts:
+
+| name | key |
+|---|---|
+| `firstWysiwyg_content` | `field_group1_firstWysiwyg_content` |
+| `secondWysiwyg_content` | `field_group1_secondWysiwyg_content` |
+
+These field can be accessed as usual through the ACF function `get_field()` and `get_fields()`.
 
 ## API
 
