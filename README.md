@@ -59,8 +59,8 @@ $config = [
   'title' => 'My Group',
   'fields' => [
     [
-      'label' => 'Sub Title',
-      'name' => 'subTitle',
+      'label' => 'Subtitle',
+      'name' => 'subtitle',
       'type' => 'text'
     ]
   ],
@@ -81,8 +81,8 @@ In order to make use of the additional functionality of **acf-field-group-compos
 ```php
 add_filter('MyProject/ACF/fields/field1', function ($field) {
   return [
-    'label' => 'Sub Title',
-    'name' => 'subTitle',
+    'label' => 'Subtitle',
+    'name' => 'subtitle',
     'type' => 'text'
   ];
 });
@@ -135,8 +135,8 @@ Combining the previous steps will yield the following result:
 ```php
 add_filter('MyProject/ACF/fields/field1', function ($field) {
   return [
-    'label' => 'Sub Title',
-    'name' => 'subTitle',
+    'label' => 'Subtitle',
+    'name' => 'subtitle',
     'type' => 'text'
   ];
 });
@@ -165,13 +165,13 @@ $config = [
 ACFComposer\ACFComposer::registerFieldGroup($config);
 ```
 
-Executing this code will add a field with the **name** `subTitle` to all posts. The **key** will be a combination of the field group name, potentially all parent field names, and the field's name itself. In this case, that is `field_group1_subTitle`.
+Executing this code will add a field with the **name** `subtitle` to all posts. The **key** will be a combination of the field group name, all parent field names (if the field has parent fields), and the field's name itself. In this case, this is `field_group1_subtitle`.
 
 ### Filter arguments
 
 There is another caveat when working with reusable components in ACF. While the flexible content field from ACF Pro gives you everything you need for adding multiple components of the same type to one field group, this is not possible for regular field groups.
 
-For example, you define a set of fields for a simple WYSIWYG component:
+For example, if you define a set of fields for a simple WYSIWYG component and then want to add it to a field group multiple times, the result will be two Wysiwyg components being displayed, but each one would have the same name, and thus overwrite each other's data.
 
 ```php
 add_filter('MyProject/ACF/fields/wysiwyg', function ($field) {
@@ -181,11 +181,7 @@ add_filter('MyProject/ACF/fields/wysiwyg', function ($field) {
     'type' => 'wysiwyg'
   ];
 });
-```
 
-And then want to add it to a field group multiple times:
-
-```php
 $config = [
   'name' => 'group1',
   'title' => 'My Group',
@@ -203,11 +199,10 @@ $config = [
 ACFComposer\ACFComposer::registerFieldGroup($config);
 ```
 
-It will result in two wysiwygs being displayed but those would have the same name and thus overwrite each other's data.
+This can be fixed by adding a filter argument. All filter arguments must be appended with #. Once this is done, the respective filter will be called with the suffix as a second argument, and the field names will be prefixed with that string.
 
-In order to fix this, there is the notion of filter arguments. These have to be appended with a `#` to the filter name. Once this is done, the respective filter will be called with the suffix as a second argument, and the field names will be prefixed with that string.
 
-Rewriting the previous example:
+For example, taking the previous broken code an adding two unique filter names will resolve the problem:
 
 ```php
 add_filter('MyProject/ACF/fields/wysiwyg', function ($field, $componentName) {
@@ -235,14 +230,14 @@ $config = [
 ACFComposer\ACFComposer::registerFieldGroup($config);
 ```
 
-This will result in the following two fields being added to all posts:
+As a result, the following two fields are added to all posts:
 
 | name | key |
 |---|---|
 | `firstWysiwyg_content` | `field_group1_firstWysiwyg_content` |
 | `secondWysiwyg_content` | `field_group1_secondWysiwyg_content` |
 
-These field can be accessed as usual through the ACF function `get_field()` and `get_fields()`.
+These field can be accessed as usual through the ACF functions `get_field()` and `get_fields()`.
 
 ## API
 
