@@ -1,0 +1,13 @@
+{
+  "name": "acf-field-group-composer",
+  "version": "1.0.0-rc1",
+  "repository": "git@github.com:bleech/acf-field-group-composer.git",
+  "author": "bleech <hello@bleech.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "standard-version": "^4.0.0"
+  },
+  "scripts": {
+    "standardRelease": "standard-version"
+  }
+}
