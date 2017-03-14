@@ -5,9 +5,11 @@
   "author": "bleech <hello@bleech.de>",
   "license": "MIT",
   "devDependencies": {
+    "conventional-github-releaser": "^1.1.3",
     "standard-version": "^4.0.0"
   },
   "scripts": {
-    "standardRelease": "standard-version"
+    "release": "standard-version",
+    "releaseGithub": "conventional-github-releaser -p angular"
   }
 }
