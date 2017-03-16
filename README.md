@@ -1,9 +1,9 @@
 # acf-field-group-composer
 
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
-[![Build Status](https://img.shields.io/travis/bleech/acf-field-group-composer.svg?style=flat-square)](https://travis-ci.org/bleech/acf-field-group-composer)
-[![Code Quality](https://img.shields.io/scrutinizer/g/bleech/acf-field-group-composer.svg?style=flat-square)](https://scrutinizer-ci.com/g/bleech/acf-field-group-composer)
-[![Code Coverage](https://img.shields.io/coveralls/bleech/acf-field-group-composer.svg?style=flat-square)](https://coveralls.io/github/bleech/acf-field-group-composer)
+[![Build Status](https://img.shields.io/travis/flyntwp/acf-field-group-composer.svg?style=flat-square)](https://travis-ci.org/flyntwp/acf-field-group-composer)
+[![Code Quality](https://img.shields.io/scrutinizer/g/flyntwp/acf-field-group-composer.svg?style=flat-square)](https://scrutinizer-ci.com/g/flyntwp/acf-field-group-composer)
+[![Code Coverage](https://img.shields.io/coveralls/flyntwp/acf-field-group-composer.svg?style=flat-square)](https://coveralls.io/github/flyntwp/acf-field-group-composer)
 
 > Configuration builder for advanced custom fields field groups
 
@@ -296,7 +296,7 @@ The main people in charge of this repo are:
 
 ## Contribute
 
-To contribute, please use github [issues](https://github.com/bleech/acf-field-group-composer/issues). Pull requests are accepted.
+To contribute, please use github [issues](https://github.com/flyntwp/acf-field-group-composer/issues). Pull requests are accepted.
 
 Small note: If editing the README, please conform to the [standard-readme](https://github.com/RichardLitt/standard-readme) specification.
 
