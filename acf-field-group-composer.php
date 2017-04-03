@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:     ACF Field Group Composer
- * Plugin URI:      PLUGIN SITE HERE
- * Description:     PLUGIN DESCRIPTION HERE
- * Author:          YOUR NAME HERE
- * Author URI:      YOUR SITE HERE
+ * Plugin URI:      https://github.com/flyntwp/acf-field-group-composer
+ * Description:     Configuration builder for advanced custom fields field groups.
+ * Author:          bleech GmbH
+ * Author URI:      https://bleech.de
  * Text Domain:     acf-field-group-composer
  * Domain Path:     /languages
- * Version:         0.1.0
+ * Version:         1.0.0
  *
  * @package         ACF_Field_Group_Composer
  */
