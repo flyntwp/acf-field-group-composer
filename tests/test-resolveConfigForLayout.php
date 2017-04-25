@@ -95,4 +95,58 @@ class ResolveConfigForLayoutTest extends TestCase
         $this->expectException(Exception::class);
         ResolveConfig::forLayout($config);
     }
+
+    public function testforLayoutGetConfigFromFilterWithArgumentAndNestedConditionalLogic()
+    {
+        $config = 'ACFComposer/Fields/someField#prefix';
+        $filter = 'ACFComposer/Fields/someField';
+        $layout = [
+            'name' => 'layout',
+            'label' => 'Layout',
+            'sub_fields' => [
+                [
+                    'name' => 'someBoolean',
+                    'label' => 'Some Boolean',
+                    'type' => 'boolean'
+                ],
+                [
+                    'name' => 'someRepeater',
+                    'label' => 'Some Repeater',
+                    'type' => 'repeater',
+                    'sub_fields' => [
+                        [
+                            'name' => 'someNestedImage',
+                            'label' => 'Some Nested Image',
+                            'type' => 'image',
+                            'conditional_logic' => [
+                                [
+                                    [
+                                        'fieldPath' => '../someBoolean',
+                                        'operator' => '==',
+                                        'value' => '1'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        Filters::expectApplied($filter)
+          ->with(null, 'prefix')
+          ->once()
+          ->andReturn($layout);
+
+        $output = ResolveConfig::forLayout($config);
+
+        $layout['key'] = 'field_prefix_layout';
+        $layout['name'] = 'prefix_layout';
+        $layout['sub_fields'][0]['key'] = 'field_prefix_layout_someBoolean';
+        $layout['sub_fields'][1]['key'] = 'field_prefix_layout_someRepeater';
+        $layout['sub_fields'][1]['sub_fields'][0]['key'] = 'field_prefix_layout_someRepeater_someNestedImage';
+        $layout['sub_fields'][1]['sub_fields'][0]['conditional_logic'][0][0]['field'] = 'field_prefix_layout_someBoolean';
+        unset($layout['sub_fields'][1]['sub_fields'][0]['conditional_logic'][0][0]['fieldPath']);
+        $this->assertEquals($layout, $output);
+    }
 }
