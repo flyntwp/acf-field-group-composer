@@ -128,6 +128,62 @@ class ResolveConfigForFieldTest extends TestCase
         $this->assertEquals($someField, $output);
     }
 
+    public function testForFieldGetConfigFromFilterWithArgumentAndConditionalLogic()
+    {
+        $config = [
+            'ACFComposer/Fields/someField#prefix',
+            'ACFComposer/Fields/someFieldWithConditional#otherprefix'
+        ];
+
+        $filter = 'ACFComposer/Fields/someField';
+        $someField = [
+            'name' => 'someField',
+            'label' => 'Some Field',
+            'type' => 'someType'
+        ];
+        Filters::expectApplied($filter)
+            ->with(null, 'prefix')
+            ->once()
+            ->andReturn($someField);
+
+        $filterConditional = 'ACFComposer/Fields/someFieldWithConditional';
+        $someFieldWithConditional = [
+            'name' => 'someOtherField',
+            'label' => 'Some Other Field',
+            'type' => 'someType',
+            'conditional_logic' => [
+                [
+                    [
+                        'fieldPath' => 'someField',
+                        'operator' => '==',
+                        'value' => 'someValue'
+                    ]
+                ]
+            ]
+        ];
+        Filters::expectApplied($filterConditional)
+            ->with(null, 'otherprefix')
+            ->once()
+            ->andReturn($someFieldWithConditional);
+
+        $output = array_map(function ($singleConfig) {
+            return ResolveConfig::forField($singleConfig);
+        }, $config);
+
+        $someField['key'] = 'field_prefix_someField';
+        $someField['name'] = 'prefix_someField';
+
+        $someFieldWithConditional['key'] = 'field_otherprefix_someOtherField';
+        $someFieldWithConditional['name'] = 'otherprefix_someOtherField';
+        $someFieldWithConditional['conditional_logic'][0][0]['field'] = 'field_otherprefix_someField';
+        unset($someFieldWithConditional['conditional_logic'][0][0]['fieldPath']);
+        $config = [
+            $someField,
+            $someFieldWithConditional
+        ];
+        $this->assertEquals($config, $output);
+    }
+
     public function testForFieldTriggerErrorWithoutFilter()
     {
         $config = 'ACFComposer/Fields/someField';
