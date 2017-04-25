@@ -13,8 +13,8 @@ class ResolveConfigForLayoutTest extends TestCase
     public function testForLayoutWithValidConfig()
     {
         $config = [
-        'name' => 'someLayout',
-        'label' => 'Some Layout'
+            'name' => 'someLayout',
+            'label' => 'Some Layout'
         ];
         $output = ResolveConfig::forLayout($config);
         $config['key'] = 'field_someLayout';
@@ -24,7 +24,7 @@ class ResolveConfigForLayoutTest extends TestCase
     public function testForLayoutFailsWithoutName()
     {
         $config = [
-        'label' => 'Some Layout'
+            'label' => 'Some Layout'
         ];
         $this->expectException(Exception::class);
         ResolveConfig::forLayout($config);
@@ -33,7 +33,7 @@ class ResolveConfigForLayoutTest extends TestCase
     public function testForLayoutFailsWithoutLabel()
     {
         $config = [
-        'name' => 'someLayout'
+            'name' => 'someLayout'
         ];
         $this->expectException(Exception::class);
         ResolveConfig::forLayout($config);
@@ -42,9 +42,9 @@ class ResolveConfigForLayoutTest extends TestCase
     public function testForLayoutFailsWithKey()
     {
         $config = [
-        'name' => 'someLayout',
-        'label' => 'Some Layout',
-        'key' => 'someKey'
+            'name' => 'someLayout',
+            'label' => 'Some Layout',
+            'key' => 'someKey'
         ];
         $this->expectException(Exception::class);
         ResolveConfig::forLayout($config);
@@ -54,12 +54,12 @@ class ResolveConfigForLayoutTest extends TestCase
     {
         $config = 'ACFComposer/Layout/someLayout';
         $someLayout = [
-        'name' => 'someLayout',
-        'label' => 'Some Layout'
+            'name' => 'someLayout',
+            'label' => 'Some Layout'
         ];
         Filters::expectApplied($config)
-        ->once()
-        ->andReturn($someLayout);
+            ->once()
+            ->andReturn($someLayout);
         $output = ResolveConfig::forLayout($config);
         $someLayout['key'] = 'field_someLayout';
         $this->assertEquals($someLayout, $output);
@@ -67,14 +67,14 @@ class ResolveConfigForLayoutTest extends TestCase
     public function testForLayoutWithValidSubField()
     {
         $subFieldConfig = [
-        'name' => 'subField',
-        'label' => 'Sub Field',
-        'type' => 'someType'
+            'name' => 'subField',
+            'label' => 'Sub Field',
+            'type' => 'someType'
         ];
         $config = [
-        'name' => 'someLayout',
-        'label' => 'Some Layout',
-        'sub_fields' => [$subFieldConfig]
+            'name' => 'someLayout',
+            'label' => 'Some Layout',
+            'sub_fields' => [$subFieldConfig]
         ];
         $output = ResolveConfig::forLayout($config);
         $subFieldConfig['key'] = 'field_someLayout_subField';
@@ -84,13 +84,13 @@ class ResolveConfigForLayoutTest extends TestCase
     public function testForLayoutFailWithInvalidSubField()
     {
         $subFieldConfig = [
-        'name' => 'subField',
-        'label' => 'Sub Field'
+            'name' => 'subField',
+            'label' => 'Sub Field'
         ];
         $config = [
-        'name' => 'someLayout',
-        'label' => 'Some Layout',
-        'sub_fields' => [$subFieldConfig]
+            'name' => 'someLayout',
+            'label' => 'Some Layout',
+            'sub_fields' => [$subFieldConfig]
         ];
         $this->expectException(Exception::class);
         ResolveConfig::forLayout($config);

@@ -14,43 +14,43 @@ class ResolveConfigForFieldGroupTest extends TestCase
     {
         $filterName = 'ACFComposer/Fields/someField';
         $fieldConfig = [
-        'name' => 'someField',
-        'label' => 'Some Field',
-        'type' => 'someType'
+            'name' => 'someField',
+            'label' => 'Some Field',
+            'type' => 'someType'
         ];
         $fieldConfigMulti = [
-        [
-        'name' => 'someField1',
-        'label' => 'Some Field1',
-        'type' => 'someType'
-        ],
-      [
-        'name' => 'someField2',
-        'label' => 'Some Field2',
-        'type' => 'someType'
-        ]
+            [
+                'name' => 'someField1',
+                'label' => 'Some Field1',
+                'type' => 'someType'
+            ],
+            [
+                'name' => 'someField2',
+                'label' => 'Some Field2',
+                'type' => 'someType'
+            ]
         ];
         $locationConfig = [
-        'param' => 'someParam',
-        'operator' => 'someOperator',
-        'value' => 'someValue'
+            'param' => 'someParam',
+            'operator' => 'someOperator',
+            'value' => 'someValue'
         ];
         $config = [
-        'name' => 'someGroup',
-        'title' => 'Some Group',
-        'fields' => [
-        $filterName,
-        $fieldConfig,
-        $fieldConfigMulti
-        ],
-        'location' => [
-        [$locationConfig]
-        ]
+            'name' => 'someGroup',
+            'title' => 'Some Group',
+            'fields' => [
+                $filterName,
+                $fieldConfig,
+                $fieldConfigMulti
+            ],
+            'location' => [
+                [$locationConfig]
+            ]
         ];
 
         Filters::expectApplied($filterName)
-        ->once()
-        ->andReturn($fieldConfig);
+            ->once()
+            ->andReturn($fieldConfig);
 
         $output = ResolveConfig::forFieldGroup($config);
         $fieldConfig['key'] = 'field_someGroup_someField';
@@ -64,21 +64,21 @@ class ResolveConfigForFieldGroupTest extends TestCase
     public function testForFieldGroupFailsWithInvalidField()
     {
         $fieldConfig = [
-        'name' => 'someField',
-        'label' => 'Some Field'
+            'name' => 'someField',
+            'label' => 'Some Field'
         ];
         $locationConfig = [
-        'param' => 'someParam',
-        'operator' => 'someOperator',
-        'value' => 'someValue'
+            'param' => 'someParam',
+            'operator' => 'someOperator',
+            'value' => 'someValue'
         ];
         $config = [
-        'name' => 'someGroup',
-        'title' => 'Some Group',
-        'fields' => [$fieldConfig],
-        'location' => [
-        [$locationConfig]
-        ]
+            'name' => 'someGroup',
+            'title' => 'Some Group',
+            'fields' => [$fieldConfig],
+            'location' => [
+                [$locationConfig]
+            ]
         ];
         $this->expectException(Exception::class);
         ResolveConfig::forFieldGroup($config);
@@ -87,21 +87,21 @@ class ResolveConfigForFieldGroupTest extends TestCase
     public function testForFieldGroupFailsWithInvalidLocation()
     {
         $fieldConfig = [
-        'name' => 'someField',
-        'label' => 'Some Field',
-        'type' => 'someType'
+            'name' => 'someField',
+            'label' => 'Some Field',
+            'type' => 'someType'
         ];
         $locationConfig = [
-        'operator' => 'someOperator',
-        'value' => 'someValue'
+            'operator' => 'someOperator',
+            'value' => 'someValue'
         ];
         $config = [
-        'name' => 'someGroup',
-        'title' => 'Some Group',
-        'fields' => [$fieldConfig],
-        'location' => [
-        [$locationConfig]
-        ]
+            'name' => 'someGroup',
+            'title' => 'Some Group',
+            'fields' => [$fieldConfig],
+            'location' => [
+                [$locationConfig]
+            ]
         ];
         $this->expectException(Exception::class);
         ResolveConfig::forFieldGroup($config);
