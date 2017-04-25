@@ -41,7 +41,7 @@ class ResolveConfig
         return self::forEntity($config, ['name', 'label'], $parentKeys);
     }
 
-    protected static function forEntity($config, $requiredAttributes, $parentKeys = [])
+    protected static function forEntity($config, $requiredAttributes, $parentKeys = [], $prefix = null)
     {
         if (is_string($config)) {
             $filterName = $config;
@@ -68,14 +68,15 @@ class ResolveConfig
             }
         }
         if (!self::isAssoc($config)) {
-            return array_map(function ($singleConfig) use ($requiredAttributes, $parentKeys) {
-                return self::forEntity($singleConfig, $requiredAttributes, $parentKeys);
+            return array_map(function ($singleConfig) use ($requiredAttributes, $parentKeys, $prefix) {
+                return self::forEntity($singleConfig, $requiredAttributes, $parentKeys, $prefix);
             }, $config);
         }
 
         $output = self::validateConfig($config, $requiredAttributes);
 
-        $output = self::forConditionalLogic($output, $parentKeys);
+        $parentKeysIncludingPrefix = isset($prefix) ? array_merge($parentKeys, [$prefix]) : $parentKeys;
+        $output = self::forConditionalLogic($output, $parentKeysIncludingPrefix);
 
         array_push($parentKeys, $output['name']);
 
