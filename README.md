@@ -239,6 +239,63 @@ As a result, the following two fields are added to all posts:
 
 These field can be accessed as usual through the ACF functions `get_field()` and `get_fields()`.
 
+### Conditional logic
+
+Conditional logic can be added to a field in the same way as in ACF. The exception is that we can pass `fieldPath` instead of `field`. The `fieldPath` must reference the name of a field defined in the same config:
+
+```json
+{
+  "label": "Show Content Field",
+  "name": "showContentField",
+  "type": "true_false"
+},
+{
+  "label": "Content",
+  "name": "contentHtml",
+  "type": "wysiwyg",
+  "conditional_logic": [
+    [
+      {
+        "fieldPath": "showContentField",
+        "operator": "==",
+        "value": "1"
+      }
+    ]
+  ]
+}
+```
+
+To reference a field in conditional logic when inside a nested sub field (for example, in a repeater), the `fieldPath` must be passed relative to the current level. For example:
+
+```json
+{
+  "label": "Show Content Field",
+  "name": "showContentField",
+  "type": "true_false"
+},
+{
+  "label": "Content Repeater",
+  "name": "contentRepeater",
+  "type": "repeater",
+  "sub_fields": [
+    {
+      "label": "Content",
+      "name": "contentHtml",
+      "type": "wysiwyg",
+      "conditional_logic": [
+        [
+          {
+            "fieldPath": "../showContentField",
+            "operator": "==",
+            "value": "1"
+          }
+        ]
+      ]
+    }
+  ]
+}
+```
+
 ## API
 
 ### ACFComposer\ACFComposer (class)
