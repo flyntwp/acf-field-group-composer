@@ -265,7 +265,7 @@ Conditional logic can be added to a field in the same way as in ACF. The excepti
 }
 ```
 
-To reference a field in conditional logic when inside a nested sub field (for example, in a repeater), the `fieldPath` must then be passed relative to the current level. For example:
+To reference a field in conditional logic when inside a nested sub field (for example, in a repeater), the `fieldPath` must be passed relative to the current level. For example:
 
 ```json
 {
