@@ -6,6 +6,13 @@ use Exception;
 
 class ResolveConfig
 {
+    /**
+     * Validates and resolves a configuration for a local field group.
+     *
+     * @param array $config Configuration array for the local field group.
+     *
+     * @return array Resolved field group configuration.
+     */
     public static function forFieldGroup($config)
     {
         $output = self::validateConfig($config, ['name', 'title', 'fields', 'location']);
@@ -26,21 +33,55 @@ class ResolveConfig
         return $output;
     }
 
+    /**
+     * Validates a location the configuration for a field group location.
+     *
+     * @param array $config Configuration array for a location of a field group.
+     *
+     * @return array Valid config.
+     */
     public static function forLocation($config)
     {
         return self::validateConfig($config, ['param', 'operator', 'value']);
     }
 
+    /**
+     * Validates and resolves a field configuration.
+     *
+     * @param array $config Configuration array for a any kind of field.
+     * @param array $parentKeys Previously used keys of all parent fields.
+     *
+     * @return array Resolved config for a field.
+     */
     public static function forField($config, $parentKeys = [])
     {
         return self::forEntity($config, ['name', 'label', 'type'], $parentKeys);
     }
 
+    /**
+     * Validates and resolves a layout configuration of a flexible content field.
+     *
+     * @param array $config Configuration array for the local field group.
+     * @param array $parentKeys Previously used keys of all parent fields.
+     *
+     * @return array Resolved config for a layout of a flexible content field.
+     */
     public static function forLayout($config, $parentKeys = [])
     {
         return self::forEntity($config, ['name', 'label'], $parentKeys);
     }
 
+
+    /**
+     * Validates and resolves configuration for a field, subfield, or layout. Applies prefix through filter arguments.
+     *
+     * @param array $config Configuration array for the nested entity.
+     * @param array $requiredAttributes Required attributes.
+     * @param array $parentKeys Previously used keys of all parent fields.
+     * @param string $prefix Optional prefix for named field based on filter arguments.
+     *
+     * @return array Resolved config.
+     */
     protected static function forEntity($config, $requiredAttributes, $parentKeys = [], $prefix = null)
     {
         if (is_string($config)) {
@@ -90,6 +131,14 @@ class ResolveConfig
         return $output;
     }
 
+    /**
+     * Validates and resolves configuration for subfields and layouts.
+     *
+     * @param array $config Configuration array for the nested entity.
+     * @param array $parentKeys Previously used keys of all parent fields.
+     *
+     * @return array Resolved config.
+     */
     protected static function forNestedEntities($config, $parentKeys)
     {
         if (array_key_exists('sub_fields', $config)) {
@@ -121,6 +170,19 @@ class ResolveConfig
         return $config;
     }
 
+    /**
+     * Validates a configuration array based on given required attributes.
+     *
+     * Usually the field key has to be provided for conditional logic to work. Since all keys are generated automatically by this plugin, you can instead provide a 'relative path' to a field by it's name.
+     *
+     * @param array $config Configuration array.
+     * @param array $requiredAttributes Required Attributes.
+     *
+     * @throws Exception if a required attribute is not present.
+     * @throws Exception if the `key` attribute is not present.
+     *
+     * @return array Given $config.
+     */
     protected static function validateConfig($config, $requiredAttributes = [])
     {
         array_walk($requiredAttributes, function ($key) use ($config) {
@@ -134,11 +196,28 @@ class ResolveConfig
         return $config;
     }
 
+    /**
+     * Maps location configurations to their resolved config arrays.
+     *
+     * @param array $locationArray All locations for a field group.
+     *
+     * @return array Resolved locations array.
+     */
     protected static function mapLocation($locationArray)
     {
         return array_map('self::forLocation', $locationArray);
     }
 
+    /**
+     * Resolves a field's conditional logic attribute.
+     *
+     * Usually the field key has to be provided for conditional logic to work. Since all keys are generated automatically by this plugin, you can instead provide a 'relative path' to a field by it's name.
+     *
+     * @param array $config Configuration array for the conditional logic attribute.
+     * @param array $parentKeys Previously used keys of all parent fields.
+     *
+     * @return array Resolved conditional logic attribute.
+     */
     protected static function forConditionalLogic($config, $parentKeys)
     {
         if (array_key_exists('conditional_logic', $config)) {
@@ -162,6 +241,13 @@ class ResolveConfig
         return $config;
     }
 
+    /**
+     * Checks whether or not a given array is associative.
+     *
+     * @param array $arr Array to check.
+     *
+     * @return boolean
+     */
     protected static function isAssoc(array $arr)
     {
         if (array() === $arr) {
