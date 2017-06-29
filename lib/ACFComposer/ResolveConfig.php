@@ -178,8 +178,8 @@ class ResolveConfig
      * @param array $config Configuration array.
      * @param array $requiredAttributes Required Attributes.
      *
-     * @throws Exception if a required attribute is not present
-     * @throws Exception if the `key` attribute is not present
+     * @throws Exception if a required attribute is not present.
+     * @throws Exception if the `key` attribute is not present.
      *
      * @return array Given $config.
      */
