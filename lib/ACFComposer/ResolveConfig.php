@@ -22,7 +22,13 @@ class ResolveConfig
             $fields = self::forField($fieldConfig, [$keySuffix]);
             if (!self::isAssoc($fields)) {
                 foreach ($fields as $field) {
-                    array_push($carry, $field);
+                    if (!self::isAssoc($field)) {
+                        foreach ($field as $sub_field) {
+                            array_push($carry, $sub_field);
+                        }
+                    } else {
+                        array_push($carry, $field);
+                    }
                 }
             } else {
                 array_push($carry, $fields);
