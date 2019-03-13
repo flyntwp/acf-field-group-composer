@@ -14,5 +14,10 @@
     "brain/monkey": "1.*",
     "squizlabs/php_codesniffer": "~2.0"
   },
-  "type": "wordpress-plugin"
+  "type": "wordpress-plugin",
+  "autoload": {
+    "psr-4": {
+      "ACFComposer\\": "lib/ACFComposer"
+    }
+  }
 }
