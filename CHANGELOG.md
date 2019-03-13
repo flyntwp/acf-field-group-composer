@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/flyntwp/acf-field-group-composer/compare/v1.0.0...v1.0.1) (2019-03-13)
+
+
+### Features
+
+* **ACFComposer/ResolveConfig:** Handle filter arguments in conditional logic ([db19414](https://github.com/flyntwp/acf-field-group-composer/commit/db19414))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/flyntwp/acf-field-group-composer/compare/v1.0.0-rc1...v1.0.0) (2017-03-16)
 
