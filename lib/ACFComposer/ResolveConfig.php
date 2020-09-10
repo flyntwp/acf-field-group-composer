@@ -20,19 +20,7 @@ class ResolveConfig
         $output['key'] = "group_{$keySuffix}";
         $output['fields'] = array_reduce($config['fields'], function ($carry, $fieldConfig) use ($keySuffix) {
             $fields = self::forField($fieldConfig, [$keySuffix]);
-            if (!self::isAssoc($fields)) {
-                foreach ($fields as $field) {
-                    if (!self::isAssoc($field)) {
-                        foreach ($field as $sub_field) {
-                            array_push($carry, $sub_field);
-                        }
-                    } else {
-                        array_push($carry, $field);
-                    }
-                }
-            } else {
-                array_push($carry, $fields);
-            }
+            self::pushSingleOrMultiple($carry, $fields);
             return $carry;
         }, []);
         $output['location'] = array_map('self::mapLocation', $output['location']);
@@ -260,5 +248,25 @@ class ResolveConfig
             return false;
         }
         return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
+    /**
+     * Adds a single or multiple elements to an array.
+     *
+     * @param array &$arr Array to add to.
+     * @param array $fields Single or multiple associative arrays to add to $arr.
+     *
+     * @return boolean
+     */
+    protected static function pushSingleOrMultiple(array &$carry, array $fields)
+    {
+        if (!self::isAssoc($fields)) {
+            foreach ($fields as $field) {
+                self::pushSingleOrMultiple($carry, $field);
+            }
+        } else {
+            array_push($carry, $fields);
+        }
+        return $carry;
     }
 }
