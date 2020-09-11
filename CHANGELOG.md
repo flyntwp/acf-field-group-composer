@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/flyntwp/acf-field-group-composer/compare/v1.0.1...v1.0.2) (2020-09-11)
+
+
+### Bug Fixes
+
+* **resolveConfig:** flatten nested filters ([#17](https://github.com/flyntwp/acf-field-group-composer/issues/17)) ([da63e97](https://github.com/flyntwp/acf-field-group-composer/commit/da63e97))
+
+
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/flyntwp/acf-field-group-composer/compare/v1.0.0...v1.0.1) (2019-03-13)
 
