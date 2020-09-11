@@ -106,4 +106,64 @@ class ResolveConfigForFieldGroupTest extends TestCase
         $this->expectException(Exception::class);
         ResolveConfig::forFieldGroup($config);
     }
+
+    public function testForFieldGroupWithNestedFilters()
+    {
+        $subFieldFilter = 'ACFComposer/Layout/subFieldLayout/SubFields';
+        $subFieldConfig = [
+            [
+                'name' => 'nestedSubField',
+                'label' => 'Nested Sub Field',
+                'type' => 'text'
+            ]
+        ];
+        $someLayoutFilter = 'ACFComposer/Layout/someLayout';
+        $someLayoutConfig = [
+            [
+              'name' => 'SubField',
+              'label' => 'Sub Field',
+              'type' => 'text'
+            ],
+            $subFieldFilter
+        ];
+        $masterLayout = [
+          'name' => 'masterLayout',
+          'title' => 'Master Layout',
+          'fields' => [
+              $someLayoutFilter
+          ],
+          'location' => [
+              [
+                  [
+                      'param' => 'someParam',
+                      'operator' => 'someOperator',
+                      'value' => 'someValue'
+                  ]
+              ]
+          ]
+        ];
+        Filters::expectApplied($subFieldFilter)
+            ->once()
+            ->andReturn($subFieldConfig);
+        Filters::expectApplied($someLayoutFilter)
+            ->once()
+            ->andReturn($someLayoutConfig);
+        $output = ResolveConfig::forFieldGroup($masterLayout);
+        $resolved_subfields = $output['fields'];
+        $expectedResult = [
+          [
+            'name' => 'SubField',
+            'label' => 'Sub Field',
+            'type' => 'text',
+            'key' => 'field_masterLayout_SubField'
+          ],
+          [
+            'name' => 'nestedSubField',
+            'label' => 'Nested Sub Field',
+            'type' => 'text',
+            'key' => 'field_masterLayout_nestedSubField'
+          ]
+        ];
+        $this->assertEquals($expectedResult, $resolved_subfields);
+    }
 }
