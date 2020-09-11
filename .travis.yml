@@ -21,15 +21,18 @@ php:
   - 5.6
   - 7.0
   - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
   - nightly
 
 matrix:
   fast_finish: true
   include:
-    - php: 5.6
+    - php: 7.1
       env:
         - COMPOSER_FLAGS="--prefer-lowest --prefer-stable --prefer-source"
-    - php: 5.6
+    - php: 7.1
       env:
         - TEST_VERSION=true
         - COMPOSER_FLAGS="--prefer-stable --prefer-source"
@@ -41,7 +44,7 @@ before_script:
   - composer install
 
 install:
-  - if [[ $TEST_VERSION == true ]]; then travis_retry composer require satooshi/php-coveralls:dev-master $COMPOSER_FLAGS --no-interaction --no-scripts --no-progress ; fi
+  - if [[ $TEST_VERSION == true ]]; then travis_retry composer require "php-coveralls/php-coveralls:2.*" $COMPOSER_FLAGS --no-interaction --no-scripts --no-progress ; fi
 
 script:
   - vendor/bin/phpcs -s --standard=phpcs.ruleset.xml .
