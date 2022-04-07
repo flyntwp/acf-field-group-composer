@@ -36,7 +36,7 @@ class ResolveConfig
      */
     public static function forLocation($config)
     {
-        return self::validateConfig($config, ['param', 'operator', 'value']);
+		return self::forEntity($config, ['param', 'operator', 'value']);
     }
 
     /**
