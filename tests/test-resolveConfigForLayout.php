@@ -5,7 +5,7 @@ namespace ACFComposer\Tests;
 require_once dirname(__DIR__) . '/lib/ACFComposer/ResolveConfig.php';
 
 use Exception;
-use Brain\Monkey\WP\Filters;
+use Brain\Monkey\Filters;
 use ACFComposer\ResolveConfig;
 
 class ResolveConfigForLayoutTest extends TestCase
@@ -57,7 +57,7 @@ class ResolveConfigForLayoutTest extends TestCase
             'name' => 'someLayout',
             'label' => 'Some Layout'
         ];
-        Filters::expectApplied($config)
+        Filters\expectApplied($config)
             ->once()
             ->andReturn($someLayout);
         $output = ResolveConfig::forLayout($config);
@@ -133,7 +133,7 @@ class ResolveConfigForLayoutTest extends TestCase
             ]
         ];
 
-        Filters::expectApplied($filter)
+        Filters\expectApplied($filter)
           ->with(null, 'prefix')
           ->once()
           ->andReturn($layout);

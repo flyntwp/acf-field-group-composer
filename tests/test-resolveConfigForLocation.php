@@ -5,10 +5,9 @@ namespace ACFComposer\Tests;
 require_once dirname(__DIR__) . '/lib/ACFComposer/ResolveConfig.php';
 
 use Exception;
-use Brain\Monkey\WP\Filters;
 use ACFComposer\ResolveConfig;
 
-class ResolveConfigForLocationTest extends TestCase
+final class ResolveConfigForLocationTest extends TestCase
 {
     public function testForLocationWithValidConfig()
     {

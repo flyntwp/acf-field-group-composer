@@ -22,7 +22,7 @@ class ACFComposerTest extends TestCase
    * @runInSeparateProcess
    * @preserveGlobalState disabled
    */
-    public function testRegisterFieldGroup()
+    public function testRegisterFieldGroup() : void
     {
         $config = 'this is a config';
         $fieldGroup = 'this is a field group';
@@ -32,7 +32,7 @@ class ACFComposerTest extends TestCase
             ->with($config)
             ->once()
             ->andReturn($fieldGroup);
-        Functions::expect('acf_add_local_field_group')
+        Functions\expect('acf_add_local_field_group')
             ->with($fieldGroup)
             ->once()
             ->andReturn($returnValue);

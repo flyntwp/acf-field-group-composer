@@ -5,7 +5,7 @@ namespace ACFComposer\Tests;
 require_once dirname(__DIR__) . '/lib/ACFComposer/ResolveConfig.php';
 
 use Exception;
-use Brain\Monkey\WP\Filters;
+use Brain\Monkey\Filters;
 use ACFComposer\ResolveConfig;
 
 class ResolveConfigForFieldTest extends TestCase
@@ -72,7 +72,7 @@ class ResolveConfigForFieldTest extends TestCase
             'label' => 'Some Field',
             'type' => 'someType'
         ];
-        Filters::expectApplied($config)
+        Filters\expectApplied($config)
             ->with(null)
             ->once()
             ->andReturn($someField);
@@ -90,7 +90,7 @@ class ResolveConfigForFieldTest extends TestCase
             'label' => 'Some Field',
             'type' => 'someType'
         ];
-        Filters::expectApplied($filter)
+        Filters\expectApplied($filter)
             ->with(null, 'prefix')
             ->once()
             ->andReturn($someField);
@@ -116,7 +116,7 @@ class ResolveConfigForFieldTest extends TestCase
                 'type' => 'someType'
             ]
         ];
-        Filters::expectApplied($filter)
+        Filters\expectApplied($filter)
             ->with(null, 'prefix')
             ->once()
             ->andReturn($someField);
@@ -141,7 +141,7 @@ class ResolveConfigForFieldTest extends TestCase
             'label' => 'Some Field',
             'type' => 'someType'
         ];
-        Filters::expectApplied($filter)
+        Filters\expectApplied($filter)
             ->with(null, 'prefix')
             ->once()
             ->andReturn($someField);
@@ -161,7 +161,7 @@ class ResolveConfigForFieldTest extends TestCase
                 ]
             ]
         ];
-        Filters::expectApplied($filterConditional)
+        Filters\expectApplied($filterConditional)
             ->with(null, 'otherprefix')
             ->once()
             ->andReturn($someFieldWithConditional);
@@ -186,18 +186,26 @@ class ResolveConfigForFieldTest extends TestCase
 
     public function testForFieldTriggerErrorWithoutFilter()
     {
+        set_error_handler(
+            static function ($errno, $errstr) {
+                restore_error_handler();
+                throw new Exception($errstr, $errno);
+            },
+            E_ALL
+        );
+
         $config = 'ACFComposer/Fields/someField';
-        Filters::expectApplied($config)
+        Filters\expectApplied($config)
             ->once()
             ->andReturn(null);
-        $this->expectException('PHPUnit_Framework_Error_Warning');
-        $output = ResolveConfig::forField($config);
+        $this->expectException(Exception::class);
+        ResolveConfig::forField($config);
     }
 
     public function testForFieldReturnEmptyArrayWithoutFilter()
     {
         $config = 'ACFComposer/Fields/someField';
-        Filters::expectApplied($config)
+        Filters\expectApplied($config)
             ->once()
             ->andReturn(null);
         $output = @ResolveConfig::forField($config);
@@ -264,7 +272,7 @@ class ResolveConfigForFieldTest extends TestCase
         ];
         $resolvedConfig = $config;
         $resolvedConfig['key'] = 'field_someField';
-        Filters::expectApplied('ACFComposer/resolveEntity')
+        Filters\expectApplied('ACFComposer/resolveEntity')
             ->once()
             ->with($resolvedConfig)
             ->andReturn(array_merge($resolvedConfig, ['foo' => 'bar']));
@@ -283,7 +291,7 @@ class ResolveConfigForFieldTest extends TestCase
         ];
         $resolvedConfig = $config;
         $resolvedConfig['key'] = 'field_someField';
-        Filters::expectApplied('ACFComposer/resolveEntity?name=someField')
+        Filters\expectApplied('ACFComposer/resolveEntity?name=someField')
             ->once()
             ->with($resolvedConfig)
             ->andReturn(array_merge($resolvedConfig, ['foo' => 'bar']));
@@ -302,7 +310,7 @@ class ResolveConfigForFieldTest extends TestCase
         ];
         $resolvedConfig = $config;
         $resolvedConfig['key'] = 'field_someField';
-        Filters::expectApplied('ACFComposer/resolveEntity?key=field_someField')
+        Filters\expectApplied('ACFComposer/resolveEntity?key=field_someField')
             ->once()
             ->with($resolvedConfig)
             ->andReturn(array_merge($resolvedConfig, ['foo' => 'bar']));
@@ -470,7 +478,7 @@ class ResolveConfigForFieldTest extends TestCase
             'label' => 'Filter Field Two',
             'type' => 'someType',
         ];
-        Filters::expectApplied($filter)
+        Filters\expectApplied($filter)
             ->once()
             ->andReturn([
                 $filterFieldOne,
