@@ -42,7 +42,7 @@ class ResolveConfig
     /**
      * Validates and resolves a field configuration.
      *
-     * @param array $config Configuration array for a any kind of field.
+     * @param array|string $config Configuration array for a any kind of field.
      * @param array $parentKeys Previously used keys of all parent fields.
      *
      * @return array Resolved config for a field.
@@ -55,7 +55,7 @@ class ResolveConfig
     /**
      * Validates and resolves a layout configuration of a flexible content field.
      *
-     * @param array $config Configuration array for the local field group.
+     * @param array|string $config Configuration array for the local field group.
      * @param array $parentKeys Previously used keys of all parent fields.
      *
      * @return array Resolved config for a layout of a flexible content field.
@@ -69,7 +69,7 @@ class ResolveConfig
     /**
      * Validates and resolves configuration for a field, subfield, or layout. Applies prefix through filter arguments.
      *
-     * @param array $config Configuration array for the nested entity.
+     * @param array|string $config Configuration array for the nested entity.
      * @param array $requiredAttributes Required attributes.
      * @param array $parentKeys Previously used keys of all parent fields.
      * @param string $prefix Optional prefix for named field based on filter arguments.
@@ -136,8 +136,8 @@ class ResolveConfig
     protected static function forNestedEntities($config, $parentKeys)
     {
         if (array_key_exists('sub_fields', $config)) {
-            $config['sub_fields'] = array_reduce($config['sub_fields'], function ($output, $field) use ($parentKeys) {
-                $fields = self::forField($field, $parentKeys);
+            $config['sub_fields'] = array_reduce($config['sub_fields'], function ($output, $subField) use ($parentKeys) {
+                $fields = self::forField($subField, $parentKeys);
                 if (!self::isAssoc($fields)) {
                     foreach ($fields as $field) {
                         array_push($output, $field);
@@ -150,13 +150,13 @@ class ResolveConfig
         }
         if (array_key_exists('layouts', $config)) {
             $config['layouts'] = array_reduce($config['layouts'], function ($output, $layout) use ($parentKeys) {
-                $layouts = self::forLayout($layout, $parentKeys);
-                if (!self::isAssoc($layouts)) {
-                    foreach ($layouts as $layout) {
-                        array_push($output, $layout);
+                $subLayouts = self::forLayout($layout, $parentKeys);
+                if (!self::isAssoc($subLayouts)) {
+                    foreach ($subLayouts as $subLayout) {
+                        array_push($output, $subLayout);
                     }
                 } else {
-                    array_push($output, $layouts);
+                    array_push($output, $subLayouts);
                 }
                 return $output;
             }, []);
