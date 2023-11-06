@@ -23,7 +23,7 @@ class ResolveConfig
             self::pushSingleOrMultiple($carry, $fields);
             return $carry;
         }, []);
-        $output['location'] = array_map('self::mapLocation', $output['location']);
+        $output['location'] = array_map([self::class, 'mapLocation'], $output['location']);
         return $output;
     }
 
@@ -199,7 +199,7 @@ class ResolveConfig
      */
     protected static function mapLocation($locationArray)
     {
-        return array_map('self::forLocation', $locationArray);
+        return array_map([self::class, 'forLocation'], $locationArray);
     }
 
     /**
