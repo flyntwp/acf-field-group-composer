@@ -7,7 +7,7 @@
  * Author URI:      https://bleech.de
  * Text Domain:     acf-field-group-composer
  * Domain Path:     /languages
- * Version:         1.0.0
+ * Version:         1.0.3
  *
  * @package         ACF_Field_Group_Composer
  */
