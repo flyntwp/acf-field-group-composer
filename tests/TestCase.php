@@ -3,20 +3,22 @@
 namespace ACFComposer\Tests;
 
 use PHPUnit\Framework;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Brain\Monkey;
 
 class TestCase extends Framework\TestCase
 {
+    use MockeryPHPUnitIntegration;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
-        Monkey::setUpWP();
+        Monkey\setUp();
     }
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
-        Monkey::tearDownWP();
+        Monkey\tearDown();
         parent::tearDown();
     }
 }

@@ -5,7 +5,7 @@ namespace ACFComposer\Tests;
 require_once dirname(__DIR__) . '/lib/ACFComposer/ResolveConfig.php';
 
 use Exception;
-use Brain\Monkey\WP\Filters;
+use Brain\Monkey\Filters;
 use ACFComposer\ResolveConfig;
 
 class ResolveConfigForFieldGroupTest extends TestCase
@@ -48,7 +48,7 @@ class ResolveConfigForFieldGroupTest extends TestCase
             ]
         ];
 
-        Filters::expectApplied($filterName)
+        Filters\expectApplied($filterName)
             ->once()
             ->andReturn($fieldConfig);
 
@@ -142,10 +142,10 @@ class ResolveConfigForFieldGroupTest extends TestCase
               ]
           ]
         ];
-        Filters::expectApplied($subFieldFilter)
+        Filters\expectApplied($subFieldFilter)
             ->once()
             ->andReturn($subFieldConfig);
-        Filters::expectApplied($someLayoutFilter)
+        Filters\expectApplied($someLayoutFilter)
             ->once()
             ->andReturn($someLayoutConfig);
         $output = ResolveConfig::forFieldGroup($masterLayout);
