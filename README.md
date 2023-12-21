@@ -296,6 +296,49 @@ To reference a field in conditional logic when inside a nested sub field (for ex
 }
 ```
 
+To reference a field in conditional logic when the field you are referencing is inside a nested sub field (for example, in a group), the `fieldPath` must have the parent and child field. The `fieldPath` should look like this:
+```
+fieldParent_fieldChild
+```
+This is how ACF Field Group Composer builds keys under the hood. By setting `fieldPath` this way, you are directly referencing the key of the field you want.
+For example:
+```json
+{
+  "label": "Content Options",
+  "name": "contentOptions",
+  "type": "group",
+  "sub_fields": [
+	{
+		"label": "Has Content",
+		"name": "hasContent",
+		"type": "true_false"
+	},
+  ]
+},
+{
+  "label": "Content Group",
+  "name": "contentGroup",
+  "type": "group",
+  "sub_fields": [
+    {
+      "label": "Content",
+      "name": "contentHtml",
+      "type": "wysiwyg",
+      "conditional_logic": [
+        [
+          {
+            "fieldPath": "contentOptions_hasContent",
+            "operator": "==",
+            "value": "1"
+          }
+        ]
+      ]
+    }
+  ]
+}
+```
+> Becuase keys are built using the snake case, naming your fields using snake case could lead to issues. If in this previous example hasContent was named has_content, there could be issues with constructing the keys.
+
 ## API
 
 ### ACFComposer\ACFComposer (class)
